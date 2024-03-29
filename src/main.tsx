@@ -7,7 +7,6 @@ import Invoicing from './Views/Invoicing.tsx'
 import Dashboard from './Views/Dashboard.tsx'
 import Search from './Views/Search.tsx'
 import Statements from './Views/Statements.tsx'
-
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 const router = createBrowserRouter([

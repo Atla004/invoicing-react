@@ -4,7 +4,7 @@ export default function Layout() {
     return (
         <div className="flex">
             <Sidebar />
-            <main>
+            <main className="w-full">
                 <Outlet />
             </main>
         </div>

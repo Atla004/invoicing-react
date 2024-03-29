@@ -6,26 +6,11 @@ import { Link } from "react-router-dom";
 
 
 export default function Sidebar() {
-    const [sidebarOpen, setSidebarOpen] = useState(true)
+    const [sidebarOpen, setSidebarOpen] = useState(false)
     useEffect(() => {
         const sidebar = document.getElementById('sidebar')
-        const sidebarContent = document.getElementById('side-content')
         console.log(sidebarOpen)
-        if (!sidebarOpen) {
-            sidebarContent?.classList.remove('w-56')
-            sidebarContent?.classList.add('w-0')
-            sidebarContent?.classList.toggle('opacity-0')
-            // setTimeout(() => {
-            //     sidebarContent?.classList.toggle('hidden')
-            // }, 150)
-        }
-        else {
-            // sidebarContent?.classList.toggle('hidden')
-            sidebarContent?.classList.remove('w-0')
-            sidebarContent?.classList.add('w-56')
-            sidebarContent?.classList.toggle('opacity-0')
-
-        }
+        sidebar?.classList.toggle('-translate-x-56')
 
     }, [sidebarOpen]) 
     // () => {
@@ -36,7 +21,7 @@ export default function Sidebar() {
     //     }
     // }
     return (
-        <aside id="sidebar" className="flex gap-0 flex-row transition-all relative overflow-hidden">
+        <aside id="sidebar" className="flex gap-0 flex-row transition-all overflow-hidden absolute -translate-x-56">
 
             <div id="side-content" className="p-5 w-56 h-dvh bg-slate-950 transition-all overflow-hidden ">
                 <div className="logo flex items-center justify-center">
@@ -61,11 +46,11 @@ export default function Sidebar() {
                     </ul>
                 </div>
             </div>
-            {/* <div className="w-10 h-10 bg-slate-950 text-xl grid place-items-center text-slate-100 rounded-tr-md rounded-br-md">
+            <div className="w-10 h-10 bg-slate-950 text-xl grid place-items-center text-slate-100 rounded-tr-md rounded-br-md">
                 <button onClick={() => setSidebarOpen(!sidebarOpen)}>
                     <CiMenuBurger />
                 </button>
-            </div> */}
+            </div>
         </aside>
 
     )
