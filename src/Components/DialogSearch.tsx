@@ -1,62 +1,118 @@
-import { useState } from "react"
+import { useState } from "react";
+import mockData from "../Data/mockData.ts";
+
 
 interface DialogSearchProps {
-   table: string,
-   field: string,
-   show: boolean,
-   setShow: Function
-   setData: Function
+  table: string;
+  field: string;
+  show: boolean;
+  setShow: Function;
+  setData: Function;
+  fields: string[];
 }
 
-type SearchResults = {
-    id: string,
-    name: string,
-    dir: string
-}
+export type SearchResults = {
+  [key: string]: string;
+};
 
-export default function DialogSearch({table, field, show, setShow, setData} : DialogSearchProps) {
-    const [searchResults, setSearchResults] = useState<SearchResults[]>([])
-    const search = async () => {
-        setSearchResults([
-            {
-                id: "30604530",
-                name: "Tomas",
-                dir: "La lago"
-            },
-            {
-                id: "30604531",
-                name: "Juan",
-                dir: "La lago"
-            },
-            {
-                id: "30604532",
-                name: "Pedro",
-                dir: "La lago"
-            }
-        ])
+
+
+export default function DialogSearch({
+  table,
+  field,
+  show,
+  setShow,
+  setData,
+  fields,
+}: DialogSearchProps) {
+  const [searchResults, setSearchResults] = useState<SearchResults[]>([]);
+  const [searchField, setSearchField] = useState("");
+  const search = async () => {
+    if (searchField === "") return;
+    const body = {
+      table: table,
+      field: field,
+      value: searchField,
     }
-    return <>
-        {
-            show &&
-            <div className="flex flex-col w-11/12 max-w-3xl h-5/6 p-4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 rounded-md border bg-white gap-2" >
-                <div className="flex flex-row">
-                    <input type="text" placeholder={`Buscar ${table} por ${field}...`} className="h-8 w-full rounded-md border-2 px-2 " />
-                    <button onClick={search} className="border rounded-md p-2 h-8 hover:bg-slate-100 transition-all flex items-center">Buscar</button>
+    const response = await fetch("http://127.0.0.1:5000/search", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await response.json();
+    console.log(data);
+    setSearchResults(data["result"]);
+  };
+  return (
+    <>
+      {show && (
+        <div className="flex flex-col w-11/12 max-w-3xl h-5/6 p-4 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 rounded-md border bg-white gap-2 shadow-xl">
+          <div className="flex flex-row gap-2">
+            <input
+              type="text"
+              placeholder={`Buscar ${table} por ${field}...`}
+              className="h-8 w-full rounded-md border px-2 "
+              value={searchField}
+              onChange={(e) => {
+                setSearchField(e.target.value);
+              }}
+             onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  search();
+                }
+              }
+             }
+            />
+            <button
+              onClick={() => {search()}}
+              className="border rounded-md p-2 h-8 hover:bg-slate-100 transition-all flex items-center"
+            >
+              Buscar
+            </button>
+          </div>
+          <div id="results" className="flex-1 border overflow-y-scroll">
+            {searchResults.map((result: SearchResults, index) => {
+              return (
+                <div
+                  key={index}
+                  className="flex flex-row gap-2 p-2 justify-around items-center hover:bg-slate-100 transition-all"
+                >
+                  {fields &&
+                    fields.map((field) => {
+                      return (
+                        <p key={field} className="text-sm">
+                          {result[field]}
+                        </p>
+                      );
+                    })}
+                  <button
+                    onClick={() => {
+                      setData(result);
+                      setShow(false);
+                      setSearchResults([]);
+                    }}
+                    className="border rounded-md p-2 hover:bg-slate-100 transition-all"
+                  >
+                    Seleccionar
+                  </button>
                 </div>
-                <div id="results" className="flex-1 border-2 overflow-y-scroll">
-                    {
-                        searchResults.map((result: SearchResults, index) => {
-                            return <div key={index} className="flex flex-row gap-2 p-2 justify-around items-center hover:bg-slate-100 transition-all">
-                                <p>{result.id}</p>
-                                <p>{result.name}</p>
-                                <p>{result.dir}</p>
-                                <button onClick={() => {setData(result); setShow(false)}} className="border rounded-md p-2 hover:bg-slate-100 transition-all">Seleccionar</button>
-                            </div>
-                        })
-                    }
-                </div>
-                <button onClick={() => {setShow(false)}} className="border rounded-md p-2 hover:bg-slate-100 transition-all w-32">close</button>
-            </div>
-        }
+              );
+            })}
+          </div>
+          <button
+            onClick={() => {
+              setShow(false);
+              setSearchResults([]);
+            }}
+            className="border rounded-md p-2 hover:bg-slate-100 transition-all w-32"
+          >
+            close
+          </button>
+        </div>
+      )}
     </>
+  );
 }
