@@ -5,6 +5,8 @@ import PaymentInput from "../Components/PaymentInput";
 import ProductTable from "../Components/ProductTable";
 import PaymentTable from "../Components/PaymentTable";
 import { useMemo, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
+import { useKeyCombination } from "@/hooks";
 
 export type Payment = {
   method: string;
@@ -26,15 +28,18 @@ export type Client = {
   dir: string;
 };
 
-export type Invoice = {
-  client: Client;
-  products: ProductEntry[];
-};
-
 export default function Invoicing() {
   const [client, setClient] = useState<Client>({ name: "", id: "", dir: "" });
   const [products, setProducts] = useState<ProductEntry[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
+
+  const [activeTab, setActiveTab] = useState("productos");
+  const tabs = ["productos", "pagos"];
+
+  useKeyCombination(() => {
+    const index = tabs.indexOf(activeTab);
+    setActiveTab(tabs[(index + 1) % tabs.length]);
+  }, ["ctrl", "alt", "t"]);
 
   const addProduct = (product: ProductEntry) => {
     const index = products.findIndex((p) => p.code === product.code);
@@ -45,6 +50,7 @@ export default function Invoicing() {
     } else {
       setProducts([...products, product]);
     }
+    console.log(products);
   };
 
   const addPayment = (payment: Payment) => {
@@ -65,30 +71,54 @@ export default function Invoicing() {
   return (
     <>
       <Navbar></Navbar>
-      <div className="p-4 w-full h-full bg-gradient-to-tr from-sky-400 via-indigo-600 to-blue-700">
-        <h1 className="text-3xl font-bold text-white">Nueva Factura</h1>
-        <div className="content p-2 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="col-span-1">
-            <ClientInput clientInfo={client} setClientInfo={setClient} />
-          </div>
-          <div className="col-span-1 md:col-span-2">
-            <ProductInput addEntry={addProduct} />
-          </div>
-          <div className="col-span-1 md:col-span-3">
-            <ProductTable products={products} setProducts={setProducts} />
-          </div>
-          <div className="col-span-1">
-            <PaymentInput addPayment={addPayment} amountLeft={totals.left} />
-          </div>
-          <div className="col-span-1 md:col-span-2">
-            <PaymentTable
-              payments={payments}
-              setPayments={setPayments}
-              amountLeft={totals.left}
-            />
-          </div>
-        </div>
+      <div className="p-2 w-full bg-gradient-to-tr from-sky-400 via-indigo-600 to-blue-700">
+      <Tabs
+        defaultValue="productos"
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="flex flex-col justify-center items-center"
+      >
+        <TabsList className="max-w-fit">
+          <TabsTrigger value="productos">Productos</TabsTrigger>
+          <TabsTrigger value="pagos">Pagos</TabsTrigger>
+        </TabsList>
+        <TabsContent value="productos">
+            <div className="content p-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="col-span-1">
+                <ClientInput clientInfo={client} setClientInfo={setClient} />
+              </div>
+              <div className="col-span-1 md:col-span-2">
+                <ProductInput addEntry={addProduct} />
+              </div>
+              <div className="col-span-1 md:col-span-3">
+                <ProductTable
+                  products={products}
+                  setProducts={setProducts}
+                  amountLeft={totals.left}
+                />
+              </div>
+            </div>
+        </TabsContent>
+        <TabsContent value="pagos">
+            <div className="content p-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="col-span-1">
+                <PaymentInput
+                  addPayment={addPayment}
+                  amountLeft={totals.left}
+                />
+              </div>
+              <div className="col-span-1 md:col-span-2">
+                <PaymentTable
+                  payments={payments}
+                  setPayments={setPayments}
+                  amountLeft={totals.left}
+                />
+              </div>
+            </div>
+        </TabsContent>
+      </Tabs>
       </div>
+
     </>
   );
 }

@@ -9,7 +9,7 @@ interface PaymentInputProps {
 
 export default function PaymentInput({ addPayment, amountLeft }: PaymentInputProps) {
 
-    const [errorMessage, setErrorMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("Pay");
     const [showError, setShowError] = useState(false);
 
     const [payment, setPayment] = useState<Payment>({

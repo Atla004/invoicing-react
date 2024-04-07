@@ -1,5 +1,7 @@
 import { useEffect, useState, Suspense } from "react";
 import Navbar from "../Components/Navbar"
+import { useKeyCombination } from "../hooks";
+import HelpDialog from "@/Components/HelpDialog";
 
 type HelloResponse = {
     message: string;
@@ -25,6 +27,7 @@ export default function Dashboard() {
             <Suspense fallback={<p>Cargando...</p>}>
                 {message.message && <p>{message.message}</p>}
             </Suspense>
+            
         </>
     )
 }

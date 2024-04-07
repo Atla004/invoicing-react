@@ -33,7 +33,6 @@ export default function ErrorMessage({ message, show }: ErrorMessageProps) {
 
 
     return (
-        // fixed position top right, square div with red background and white text
 
         <div id="error-message" className={`fixed z-20 top-2 right-2 p-4 rounded-md w-52 bg-red-500 text-white block transition-all`}>
             <p className="font-bold">Error</p>

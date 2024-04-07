@@ -1,29 +1,34 @@
 import { useState, useMemo } from "react";
 import { CiTrash } from "react-icons/ci";
+
 import {
   MaterialReactTable,
   useMaterialReactTable,
+  MRT_Table,
   type MRT_ColumnDef,
 } from "material-react-table";
 
 import { ProductEntry } from "../Views/Invoicing";
+import ErrorMessage from "./ErrorMessage";
+import { useKeyCombination } from "@/hooks";
 
 interface ProductTableProps {
   products: ProductEntry[];
   setProducts: (products: ProductEntry[]) => void;
+  amountLeft: number;
 }
 
-export default function ProductTable({ products, setProducts }: ProductTableProps) {
-  const removeProduct = (index: number) => {
-    const newProducts = [...products];
-    newProducts.splice(index, 1);
-    console.log(index)
-    setProducts(newProducts);
-  }
+export default function ProductTable({ products, setProducts, amountLeft}: ProductTableProps) {
+
+  useKeyCombination(() => {
+    console.log("pressed");
+  }, ["ctrl", "alt", "l"])
 
   const subtotal = useMemo(() => {
     return products.reduce((acc, p) => acc + p.price * p.quantity, 0);
   }, [products]);
+
+
   
 
   const columns = useMemo<MRT_ColumnDef<ProductEntry>[]>(() => {
@@ -69,8 +74,9 @@ export default function ProductTable({ products, setProducts }: ProductTableProp
                     className="font-bold text-md border w-8 h-8 rounded-md grid place-items-center hover:bg-blue-500 hover:text-white transition-all"
                     onClick={() => {
                         const newProducts = [...products];
-                        newProducts[row.index].quantity += 1;
-                        setProducts(newProducts);
+                        console.log(products, newProducts, row.index);
+
+                        
                     }}>+</button>
                 </div>
             ),
@@ -87,7 +93,13 @@ export default function ProductTable({ products, setProducts }: ProductTableProp
           Cell: ({row}) => (
             <button
               className="text-white bg-red-500 rounded-md p-1 w-8 h-8 hover:bg-red-700 transition-all grid place-items-center"
-              onClick={() => removeProduct(row.index)}
+              onClick={() =>{
+                const newProducts = [...products];
+                newProducts.splice(row.index, 1);
+                setProducts(newProducts);
+
+              }
+              }
             >
               <CiTrash />
             </button>
@@ -109,8 +121,8 @@ export default function ProductTable({ products, setProducts }: ProductTableProp
   })
   return (
     <div className="shadow-xl p-4 rounded-md bg-white">
-        <h2 className="text-2xl mb-4 font-bold">Productos</h2>
-        <MaterialReactTable table={table}/>
+        <h2 className="text-lg font-bold">Productos</h2>
+        <MRT_Table table={table}/>
         
         <div className="flex flex-row justify-end gap-4 mt-4">
             <h3 className="text-md font-bold">Subtotal:</h3>
@@ -133,6 +145,7 @@ export default function ProductTable({ products, setProducts }: ProductTableProp
               }
             </h3>
         </div>
+
     </div>
         
 

@@ -1,8 +1,19 @@
+import HelpDialog from "./HelpDialog";
+import { useKeyCombination } from "@/hooks";
+import { useState } from "react";
+
 export default function Navbar() {
+    const [openHelp, setOpenHelp] = useState(false);
+
+    useKeyCombination(() => {
+        setOpenHelp(!openHelp);
+      }, ['ctrl','alt', 'h']);
+
+
     return (
         <>
-            <div className="h-10 w-full flex justify-center items-center bg-slate-50">
-                <p className="text-xl">Hola</p>
+            <div className="h-10 flex justify-end items-center fixed top-0 right-0">
+                <HelpDialog open={openHelp} setOpen={setOpenHelp}/>
             </div>
         </>
     )

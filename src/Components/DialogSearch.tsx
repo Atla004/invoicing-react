@@ -1,5 +1,4 @@
-import { useState } from "react";
-import mockData from "../Data/mockData.ts";
+import { useEffect, useState } from "react";
 
 
 interface DialogSearchProps {
@@ -9,6 +8,7 @@ interface DialogSearchProps {
   setShow: Function;
   setData: Function;
   fields: string[];
+  focusOnClose?: HTMLElement | null;
 }
 
 export type SearchResults = {
@@ -24,6 +24,7 @@ export default function DialogSearch({
   setShow,
   setData,
   fields,
+  focusOnClose,
 }: DialogSearchProps) {
   const [searchResults, setSearchResults] = useState<SearchResults[]>([]);
   const [searchField, setSearchField] = useState("");
@@ -45,7 +46,22 @@ export default function DialogSearch({
     const data = await response.json();
     console.log(data);
     setSearchResults(data["result"]);
+
   };
+
+  useEffect(() => {
+    if (show) {
+      (document.getElementById("searchField-dialog") as HTMLElement)?.focus();
+    }
+  }
+  , [show]);
+
+  // when searchData changes, focus on the first button of the results
+  useEffect(() => {
+    if (searchResults.length > 0) {
+      (document.getElementById("results")?.firstElementChild?.lastElementChild as HTMLElement).focus();
+    }
+  }, [searchResults]);
   return (
     <>
       {show && (
@@ -53,6 +69,7 @@ export default function DialogSearch({
           <div className="flex flex-row gap-2">
             <input
               type="text"
+              id="searchField-dialog"
               placeholder={`Buscar ${table} por ${field}...`}
               className="h-8 w-full rounded-md border px-2 "
               value={searchField}
@@ -93,6 +110,9 @@ export default function DialogSearch({
                       setData(result);
                       setShow(false);
                       setSearchResults([]);
+                      if (focusOnClose) {
+                        focusOnClose.focus();
+                      }
                     }}
                     className="border rounded-md p-2 hover:bg-slate-100 transition-all"
                   >

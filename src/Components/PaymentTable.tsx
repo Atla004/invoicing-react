@@ -6,7 +6,7 @@ import {
   type MRT_ColumnDef,
 } from "material-react-table";
 
-import { Payment } from "../Views/Invoicing";
+import { Payment, } from "../Views/Invoicing";
 
 interface PaymentTableProps {
   payments: Payment[];
@@ -22,7 +22,6 @@ export default function PaymentTable({ payments, setPayments, amountLeft }: Paym
     setPayments(newPayments);
   }
 
-  
 
   const columns = useMemo<MRT_ColumnDef<Payment>[]>(() => {
     return [
@@ -75,11 +74,11 @@ export default function PaymentTable({ payments, setPayments, amountLeft }: Paym
             <h3 className="text-xl font-bold">Restante por pagar:</h3>
             <h3 className="text-xl font-bold">
               ${
-                // round to two decimal places
                 amountLeft.toFixed(2)
               }
             </h3>
         </div>
+        
     </div>
         
 

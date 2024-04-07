@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 
+
 export default function Sidebar() {
     const [sidebarOpen, setSidebarOpen] = useState(false)
     useEffect(() => {
@@ -12,12 +13,12 @@ export default function Sidebar() {
         console.log(sidebarOpen)
         sidebar?.classList.toggle('-translate-x-56')
 
-    }, [sidebarOpen]) 
+    }, [sidebarOpen])
 
     return (
-        <aside id="sidebar" className="flex gap-0 flex-row transition-all overflow-hidden absolute -translate-x-56 z-20">
+        <aside id="sidebar" className="flex gap-0 flex-row transition-all overflow-hidden absolute -translate-x-56 z-20 bottom-0">
 
-            <div id="side-content" className="p-5 w-56 h-dvh bg-slate-50 transition-all overflow-hidden ">
+            <div id="side-content" className="p-5 w-56 h-dvh bg-slate-50 transition-all overflow-hidden flex flex-col">
                 <div className="logo flex items-center justify-center">
                     <CiLemon fontSize={40} className="text-blue-500" />
                     <p className="text-xl text-blue-500 font-extrabold">MEG</p>
@@ -39,8 +40,12 @@ export default function Sidebar() {
                     
                     </ul>
                 </div>
+                {/* make the div be at the bottom */}
+                <div className="mt-auto">
+
+                </div>
             </div>
-            <div className="w-10 h-10 bg-slate-200 text-xl grid place-items-center ">
+            <div className="w-10 h-10 bg-slate-200 text-xl grid place-items-center rounded-br">
                 <button onClick={() => setSidebarOpen(!sidebarOpen)}>
                     <CiMenuBurger />
                 </button>
