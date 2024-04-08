@@ -68,6 +68,7 @@ export default function DialogSearch({
     if (!show) {
       focusOnClose?.focus();
     }
+    console.log(focusOnClose)
   }, [show]);
 
   return (
