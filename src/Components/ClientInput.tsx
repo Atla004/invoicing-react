@@ -4,6 +4,7 @@ import { CiSearch } from "react-icons/ci";
 import { Client } from "../Views/Invoicing";
 import { useKeyCombination } from "../hooks";
 import ActionAlert from "./Alerts/ActionAlert";
+import { toast } from "sonner";
 
 interface ClientInputProps {
   clientInfo: Client;
@@ -47,10 +48,47 @@ export default function ClientInput({
 
   const saveClientButton = useRef<HTMLButtonElement>(null);
 
-  const saveClientInDB = () => {
-    alert("Cliente guardado");
-    console.log(clientInfo);
-    setDisabled(true);
+  const validateClient = () => {
+    if (clientInfo.name === "" || clientInfo.surname === "" || clientInfo.pid === "" || clientInfo.dir === "") {
+      toast.error("Por favor, rellene todos los campos");
+      return false;
+    }
+    return true;
+  }
+  const saveClientInDB = async () => {
+    const body = {
+      ...clientInfo
+    }
+
+    if (!validateClient()) return;
+
+    const res = await fetch("http://127.0.0.1:5000/createClient", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (res.ok) {
+      type Response = {
+        result: {
+          action: string;
+        }
+      }
+      const data: Response = await res.json();
+      if (data.result.action === "insert") {
+        toast.success("Cliente guardado exitosamente");
+        setDisabled(true);
+      }
+      else {
+        toast.success("Cliente actualizado exitosamente");
+        setDisabled(true);
+      }
+    }
+    else {
+      toast.error("Error al guardar el cliente");
+    }
   }
 
   return (
@@ -63,6 +101,7 @@ export default function ClientInput({
             id="client"
             className="h-8 w-1/2 rounded-md border px-2 inline"
             placeholder="Name"
+            maxLength={50}
             value={clientInfo.name}
             disabled={disabled}
             onChange={(e) => {
@@ -77,6 +116,7 @@ export default function ClientInput({
             id="client"
             className="h-8 w-1/2 rounded-md border px-2 inline"
             placeholder="Surname"
+            maxLength={500}
             value={clientInfo.surname}
             disabled={disabled}
             onChange={(e) => {
@@ -133,6 +173,7 @@ export default function ClientInput({
             id="client"
             disabled={disabled}
             placeholder="Direccion"
+            maxLength={100}
             className="h-8 w-full rounded-md border px-2 inline"
             value={clientInfo.dir}
             onChange={(e) => {
