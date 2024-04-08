@@ -31,17 +31,6 @@ export default function ProductTable({ products, setProducts, amountLeft}: Produ
   }
   , [products]);
 
-  const handleReduceQuantity = (products: ProductEntry[], index: number) => {
-    products[index].quantity -= 1
-
-    if (products[index].quantity < 1) {
-      products[index].quantity = 1
-    }
-    return products
-  }
-
-  
-
   const columns = useMemo<MRT_ColumnDef<ProductEntry>[]>(() => {
     return [
         {

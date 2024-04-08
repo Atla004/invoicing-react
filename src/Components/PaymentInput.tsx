@@ -9,50 +9,41 @@ interface PaymentInputProps {
 export default function PaymentInput({ addPayment, amountLeft }: PaymentInputProps) {
 
     const [payment, setPayment] = useState<Payment>({
-        method: "cash",
+        method: "EFECTIVO",
         bank: "",
         amount: 0,
     });
 
     const [currency, setCurrency] = useState({
-        name: "$",
-        dbname: "usd",
+        name: "USD",
     });
 
     const isBankDisabled = useMemo(() => {
         return payment.method === "cash"
     }, [payment])
 
-    const currencies = [
-        {
-            name: "$",
-            dbname: "usd",
-        },
-        {
-            name: "Bs.",
-            dbname: "bs",
-        },
-    ]
+    const currencies = ["BS", "USD"]
     const paymentMethods = [
         {
-                name: "Efectivo",
+                name: "EFECTIVO",
                 banks: [],
-                dbname: "cash",
+                currencies: ["BS", "USD"]
         },
         {
-                name: "Tarjeta de crédito",
-                banks: ["BNC", "Venezuela", "Banesco"],
-                dbname: "credit",
+                name: "TARJETA DE CREDITO",
+                banks: ["BNC", "VENEZUELA", "BANESCO"],
+                currencies: ["BS"]
         },  
         {
-                name: "Tarjeta de débito",
-                banks: ["BNC", "Venezuela", "Banesco"],
-                dbname: "debit",
+                name: "TARJETA DE DEBITO",
+                banks: ["BNC", "VENEZUELA", "BANESCO"],
+                currencies: ["BS"]
+
         },
         {
-                name: "Zelle",
-                banks: ["BofA", "Chase", "Wells Fargo"],
-                dbname: "zelle",
+                name: "ZELLE",
+                banks: ["BOFA", "CHASE"],
+                currencies: ["USD"]
         },
     ]
 
@@ -91,7 +82,7 @@ export default function PaymentInput({ addPayment, amountLeft }: PaymentInputPro
                         
                         >
                             {paymentMethods.map((method) => (
-                                <option key={method.dbname} value={method.dbname}>{method.name}</option>
+                                <option key={method.name} value={method.name}>{method.name}</option>
                             ))}
                         </select>
                     <div className="flex flex-row gap-1 justify-start items-center">
@@ -106,7 +97,7 @@ export default function PaymentInput({ addPayment, amountLeft }: PaymentInputPro
                         }}
                         >
                             {
-                                paymentMethods.find((method) => method.dbname === payment.method)?.banks.map((bank) => (
+                                paymentMethods.find((method) => method.name === payment.method)?.banks.map((bank) => (
                                     <option key={bank} value={bank}>{bank}</option>
                                 ))
                             }
@@ -114,17 +105,19 @@ export default function PaymentInput({ addPayment, amountLeft }: PaymentInputPro
                     </div>
                     <div className="flex flex-row gap-1 justify-start items-center">
                             {/* amount */}
-                            <select className="h-8 rounded-md border px-2 inline" value={currency.dbname}
+                            <select className="h-8 rounded-md border px-2 inline" value={currency.name}
                             onChange={(e) => {
                                 setCurrency({
-                                    name: e.target.value === "usd" ? "$" : "Bs.",
-                                    dbname: e.target.value,
+                                    name: e.target.value
                                 });
                             } }
                             >
-                                {currencies.map((currency) => (
-                                    <option key={currency.dbname} value={currency.dbname}>{currency.name}</option>
-                                ))}
+                                {/* Solo monedas permitidas por el metodo de pago */}
+                                {
+                                    paymentMethods.find((method) => method.name === payment.method)?.currencies.map((currency) => (
+                                        <option key={currency} value={currency}>{currency}</option>
+                                    ))
+                                }
                             </select>
                             <input type="number" className="h-8 w-full rounded-md border px-2 inline text-right" step={0.01} 
                             value={(payment.amount).toFixed(2)}
