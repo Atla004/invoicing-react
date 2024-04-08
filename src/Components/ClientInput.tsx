@@ -19,7 +19,7 @@ export default function ClientInput({
 
   useKeyCombination(() => {
     setShowModal(!showModal);
-    setSearchField('id')    
+    setSearchField('pid')    
   }, ["ctrl", "alt", "c"]);
 
   useKeyCombination(() => {
@@ -31,7 +31,7 @@ export default function ClientInput({
     setShowModal(true);
     setSearchField(field);
   };
-  const clientFields = ["id", "name", "surname", "dir"];
+  const clientFields = ["pid", "name", "surname", "dir"];
 
   const saveClientButton = document.getElementById("save-client");
 
@@ -72,17 +72,17 @@ export default function ClientInput({
             id="client"
             disabled={disabled}
             className="h-8 w-full rounded-md border  px-2 inline"
-            value={clientInfo.id}
+            value={clientInfo.pid}
             onChange={(e) => {
               setClientInfo({
                 ...clientInfo,
-                id: e.target.value,
+                pid: e.target.value,
               });
             }}
           />
           <button
             className="rounded-md p-1 inline h-8 font-bold hover:bg-slate-200 transition-all"
-            onClick={() => handleSearchClick("id")}
+            onClick={() => handleSearchClick("pid")}
           >
             <CiSearch />
           </button>
@@ -116,7 +116,7 @@ export default function ClientInput({
         
       </div>
       <DialogSearch
-          table="cliente"
+          table="client"
           field={searchField}
           show={showModal}
           setShow={setShowModal}

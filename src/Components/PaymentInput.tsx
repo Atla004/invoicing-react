@@ -1,16 +1,12 @@
 import { useMemo, useState } from "react";
 import { Payment } from "../Views/Invoicing";
-import ErrorMessage from "./ErrorMessage";
-
+import { toast } from "sonner";
 interface PaymentInputProps {
     addPayment: (payment: Payment) => void;
     amountLeft: number;
 }
 
 export default function PaymentInput({ addPayment, amountLeft }: PaymentInputProps) {
-
-    const [errorMessage, setErrorMessage] = useState("Pay");
-    const [showError, setShowError] = useState(false);
 
     const [payment, setPayment] = useState<Payment>({
         method: "cash",
@@ -65,11 +61,7 @@ export default function PaymentInput({ addPayment, amountLeft }: PaymentInputPro
             return;
         }
         if (payment.amount > amountLeft) {
-            setErrorMessage("El monto ingresado es mayor al monto restante por pagar");
-            setShowError(true);
-            setTimeout(() => {
-                setShowError(false);
-            }, 3000);
+            toast.error("El monto ingresado es mayor al monto restante por pagar");
             return;
         }
         addPayment(payment);
@@ -151,7 +143,6 @@ export default function PaymentInput({ addPayment, amountLeft }: PaymentInputPro
                         Agregar
                     </button>
                 </div>
-            <ErrorMessage  message={errorMessage} show={showError}/>
         </div>
     );
 }

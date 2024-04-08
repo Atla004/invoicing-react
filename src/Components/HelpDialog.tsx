@@ -20,7 +20,7 @@ export default function HelpDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" className="hover:bg-transparent"><span className="mr-2 text-white">Ayuda</span>   
+        <Button variant="ghost" className="hover:bg-[rgba(255,255,255,0.16)]"><span className="mr-2 text-white">Ayuda</span>   
             <KeyCombo keys={["Ctrl", "Alt", "H"]}></KeyCombo>
         </Button>
       </DialogTrigger>

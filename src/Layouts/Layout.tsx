@@ -2,6 +2,8 @@ import Sidebar from "../Components/Sidebar"
 import { Outlet } from "react-router-dom"
 import { useKeyCombination } from "../hooks"
 import { useNavigate } from "react-router-dom"
+import { Toaster } from "@/Components/ui/sonner"
+
 export default function Layout() {
     const navigate = useNavigate();
     useKeyCombination(() => {
@@ -22,6 +24,7 @@ export default function Layout() {
             <main className="w-full">
                 <Outlet />
             </main>
+            <Toaster richColors />
             
         </div>
     )

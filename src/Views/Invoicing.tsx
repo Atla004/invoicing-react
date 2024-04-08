@@ -17,19 +17,19 @@ export type Payment = {
 export type ProductEntry = {
   name: string;
   code: string;
-  photoUrl: string;
+  photourl: string;
   price: number;
   quantity: number;
 };
 
 export type Client = {
   name: string;
-  id: string;
+  pid: string;
   dir: string;
 };
 
 export default function Invoicing() {
-  const [client, setClient] = useState<Client>({ name: "", id: "", dir: "" });
+  const [client, setClient] = useState<Client>({ name: "", pid: "", dir: "" });
   const [products, setProducts] = useState<ProductEntry[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
 

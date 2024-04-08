@@ -80,13 +80,13 @@ export default  {
             name: 'Tenedor',
             code: 12345678,
             price: 10,
-            photoUrl: "https://unomasuno.pe/wp-content/uploads/2021/06/i-h022-2.png"
+            photourl: "https://unomasuno.pe/wp-content/uploads/2021/06/i-h022-2.png"
         },
         {
             name: "Silla",
             code: 87654321,
             price: 20,
-            photoUrl: "https://mueblesbima.com/content/images/thumbs/0001926_silla-andrea_300.jpeg"
+            photourl: "https://mueblesbima.com/content/images/thumbs/0001926_silla-andrea_300.jpeg"
         }
     ],
 }

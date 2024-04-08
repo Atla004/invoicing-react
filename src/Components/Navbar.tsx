@@ -12,7 +12,7 @@ export default function Navbar() {
 
     return (
         <>
-            <div className="h-10 flex justify-end items-center fixed top-0 right-0">
+            <div className="h-10 flex justify-end items-center absolute top-0 right-0">
                 <HelpDialog open={openHelp} setOpen={setOpenHelp}/>
             </div>
         </>

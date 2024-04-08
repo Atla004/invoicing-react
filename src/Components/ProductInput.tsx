@@ -14,7 +14,7 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
   const [productInfo, setProductInfo] = useState<ProductEntry>({
     name: "",
     code: "",
-    photoUrl: "https://placehold.co/600x600?text=buscar+producto",
+    photourl: "https://placehold.co/600x600?text=buscar+producto",
     quantity: 0,
     price: 0,
   });
@@ -32,7 +32,7 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
   const controlledSetProductInfo = (productInfo: {
     name: string;
     code: string;
-    photoUrl: string;
+    photourl: string;
     price: number;
   }) => {
     setProductInfo({ ...productInfo, quantity: 0 });
@@ -44,7 +44,7 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
     setProductInfo({
       name: "",
       code: "",
-      photoUrl: "https://placehold.co/600x600?text=buscar+producto",
+      photourl: "https://placehold.co/600x600?text=buscar+producto",
       quantity: 0,
       price: 0,
     });
@@ -54,7 +54,7 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
     setShowModal(true);
     setSearchField(field);
   };
-  const productFields = ["name", "code", "photoUrl", "price"];
+  const productFields = ["name", "code", "photourl", "price"];
 
   const addMoreButton = document.getElementById("addMoreButton");
 
@@ -168,14 +168,14 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
         </div>
         <div className="rounded-md grid place-items-center ">
           <img
-            src={productInfo.photoUrl}
+            src={productInfo.photourl}
             className="rounded-md md:w-full object-cover w-48 h-48 max-w-full"
             alt=""
           />
         </div>
       </div>
       <DialogSearch
-        table="producto"
+        table="product"
         field={searchField}
         show={showModal}
         setShow={setShowModal}

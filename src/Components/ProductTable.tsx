@@ -2,14 +2,12 @@ import { useState, useMemo } from "react";
 import { CiTrash } from "react-icons/ci";
 
 import {
-  MaterialReactTable,
   useMaterialReactTable,
   MRT_Table,
   type MRT_ColumnDef,
 } from "material-react-table";
 
 import { ProductEntry } from "../Views/Invoicing";
-import ErrorMessage from "./ErrorMessage";
 import { useKeyCombination } from "@/hooks";
 
 interface ProductTableProps {
@@ -34,10 +32,10 @@ export default function ProductTable({ products, setProducts, amountLeft}: Produ
   const columns = useMemo<MRT_ColumnDef<ProductEntry>[]>(() => {
     return [
         {
-            accessorKey: "photoUrl",
+            accessorKey: "photourl",
             header: "Foto",
             Cell: ({row}) => (
-                <img src={row.original.photoUrl} alt={row.original.name} className="rounded-md h-10 w-10" />
+                <img src={row.original.photourl} alt={row.original.name} className="rounded-md h-10 w-10" />
             ),
             size: 50,
         },
