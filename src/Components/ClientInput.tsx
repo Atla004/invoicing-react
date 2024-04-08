@@ -42,7 +42,7 @@ export default function ClientInput({
     setShowModal(true);
     setSearchField(field);
   };
-  const clientFields = ["pid", "name", "surname", "dir"];
+  const clientFields = ["pid_prefix", "pid", "name", "surname", "dir"];
 
   const saveClientButton = useRef<HTMLButtonElement>(null);
 
@@ -58,7 +58,7 @@ export default function ClientInput({
           <input
             type="text"
             id="client"
-            className="h-8 w-full rounded-md border px-2 inline"
+            className="h-8 w-1/2 rounded-md border px-2 inline"
             placeholder="Name"
             value={clientInfo.name}
             disabled={disabled}
@@ -66,6 +66,20 @@ export default function ClientInput({
               setClientInfo({
                 ...clientInfo,
                 name: e.target.value,
+              });
+            }}
+          />
+          <input
+            type="text"
+            id="client"
+            className="h-8 w-1/2 rounded-md border px-2 inline"
+            placeholder="Surname"
+            value={clientInfo.surname}
+            disabled={disabled}
+            onChange={(e) => {
+              setClientInfo({
+                ...clientInfo,
+                surname: e.target.value,
               });
             }}
           />
@@ -77,10 +91,22 @@ export default function ClientInput({
           </button>
         </div>
         <div className="flex flex-row gap-1 justify-start items-center">
+          <select name="" id="client-pid-prefix" className="w-8 h-8 border rounded"
+            onChange={(e) => setClientInfo({
+              ...clientInfo,
+              "pid_prefix": e.target.value
+            })}
+            value={clientInfo["pid_prefix"]}
+          >
+            <option value="V">V</option>
+            <option value="J">J</option>
+            <option value="E">E</option>
+          </select>
           <input
             type="text"
             placeholder="ID"
-            id="client"
+            id="client-pid"
+            maxLength={30}
             disabled={disabled}
             className="h-8 w-full rounded-md border  px-2 inline"
             value={clientInfo.pid}
@@ -122,7 +148,7 @@ export default function ClientInput({
             </button>
             <button className="col-span-1 bg-blue-500 text-white rounded-md p-2 w-full"
                 onClick={() => saveClientInDB()}
-            >Nuevo Cliente</button>
+            >Crear/Editar Cliente</button>
         </div>
         
       </div>

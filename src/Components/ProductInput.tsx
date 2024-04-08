@@ -70,13 +70,13 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
 
   return (
     <div className="shadow-xl p-4 rounded-md bg-white">
-      <div className="flex flex-col md:flex-row gap-4">
+      <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2 flex-1">
           <h1 className="text-lg font-bold">Ingresar producto</h1>
           <div className="flex flex-row gap-1 justify-start items-center">
             <input
               type="text"
-              id="client"
+              id="product-name"
               className="h-8 w-full rounded-md border px-2 inline"
               placeholder="Name"
               value={productInfo.name}
@@ -96,12 +96,11 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
           </div>
 
           <div className="flex flex-row gap-1 justify-between items-center">
-            <div className="flex flex-row gap-1 items-center">
               <input
                 type="text"
                 placeholder="Codigo"
                 id="client"
-                className="h-8 rounded-md border  px-2 inline"
+                className="h-8 w-full rounded-md border px-2 inline"
                 value={productInfo.code}
                 onChange={(e) => {
                   setProductInfo({
@@ -136,7 +135,7 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
                 type="number"
                 disabled
                 id="quantity"
-                className="h-8 w-1/5 rounded-md border px-2 inline"
+                className="h-8 w-1/4 rounded-md border px-2 inline"
                 placeholder="Quantity"
                 value={productInfo.quantity}
                 onChange={(e) => {
@@ -158,7 +157,6 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
               >
                 +
               </button>
-            </div>
           </div>
           <div className="flex flex-row gap-1 justify-start items-center"></div>
 

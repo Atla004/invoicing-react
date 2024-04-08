@@ -1,9 +1,8 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { CiTrash } from "react-icons/ci";
 
 import {
   useMaterialReactTable,
-  MRT_Table,
   MaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
@@ -13,7 +12,7 @@ import { useKeyCombination } from "@/hooks";
 
 interface ProductTableProps {
   products: ProductEntry[];
-  setProducts: (products: ProductEntry[]) => void;
+  setProducts: any;
   amountLeft: number;
 }
 
@@ -27,6 +26,19 @@ export default function ProductTable({ products, setProducts, amountLeft}: Produ
     return products.reduce((acc, p) => acc + p.price * p.quantity, 0);
   }, [products]);
 
+  useEffect(() => {
+    console.log(products);
+  }
+  , [products]);
+
+  const handleReduceQuantity = (products: ProductEntry[], index: number) => {
+    products[index].quantity -= 1
+
+    if (products[index].quantity < 1) {
+      products[index].quantity = 1
+    }
+    return products
+  }
 
   
 
@@ -64,16 +76,30 @@ export default function ProductTable({ products, setProducts, amountLeft}: Produ
                     <button 
                     className="font-bold text-md border w-8 h-8 rounded-md grid place-items-center hover:bg-red-500 hover:text-white transition-all"
                     onClick={() => {
-                      const newProducts = [...products];
-                      newProducts[row.index].quantity - 1 < 1 ? 1 : newProducts[row.index].quantity -= 1;
-                      setProducts(newProducts);
+                      console.log("reduce q")
+                      setProducts((prevProducts: ProductEntry[]) => {
+                        const newProducts = [...prevProducts]
+
+                        newProducts[row.index].quantity -= 1
+
+                        if (newProducts[row.index].quantity < 1) {
+                          newProducts[row.index].quantity =1
+                        }
+
+                        return newProducts
+                      });
                     }}>-</button>
                     <span>{row.original.quantity}</span>
                     <button 
                     className="font-bold text-md border w-8 h-8 rounded-md grid place-items-center hover:bg-blue-500 hover:text-white transition-all"
                     onClick={() => {
-                        const newProducts = [...products];
-                        console.log(products, newProducts, row.index);
+                      setProducts((prevProducts: ProductEntry[]) => {
+                        const newProducts = [...prevProducts]
+
+                        newProducts[row.index].quantity += 1
+
+                        return newProducts
+                      });
 
                         
                     }}>+</button>
@@ -93,10 +119,7 @@ export default function ProductTable({ products, setProducts, amountLeft}: Produ
             <button
               className="text-white bg-red-500 rounded-md p-1 w-8 h-8 hover:bg-red-700 transition-all grid place-items-center"
               onClick={() =>{
-                const newProducts = [...products];
-                newProducts.splice(row.index, 1);
-                setProducts(newProducts);
-
+                setProducts((prevProducts: ProductEntry[]) => prevProducts.filter((p) => p.code !== row.original.code));
               }
               }
             >
@@ -119,6 +142,18 @@ export default function ProductTable({ products, setProducts, amountLeft}: Produ
     enableColumnFilters: false,
     enableGrouping: false,
     enableRowActions: false,
+    enableDensityToggle: false,
+    enableGlobalFilter: false,
+    enableFullScreenToggle: false,
+    initialState : {
+      density: "compact"
+    },
+    muiTableContainerProps: {
+      sx: {
+        height: "280px",
+        maxHeight: "280px",
+      },
+    }
   })
   return (
     <div className="shadow-xl p-4 rounded-md bg-white">
@@ -148,7 +183,6 @@ export default function ProductTable({ products, setProducts, amountLeft}: Produ
         </div>
 
     </div>
-        
-
   );
 }
+

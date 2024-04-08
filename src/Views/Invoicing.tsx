@@ -24,12 +24,14 @@ export type ProductEntry = {
 
 export type Client = {
   name: string;
+  surname: string;
+  pid_prefix: string;
   pid: string;
   dir: string;
 };
 
 export default function Invoicing() {
-  const [client, setClient] = useState<Client>({ name: "", pid: "", dir: "" });
+  const [client, setClient] = useState<Client>({ name: "",surname: "" ,"pid_prefix": "V", pid: "", dir: "" });
   const [products, setProducts] = useState<ProductEntry[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
 
@@ -60,10 +62,12 @@ export default function Invoicing() {
   const totals = useMemo(() => {
     const subtotal = products.reduce((acc, p) => acc + p.price * p.quantity, 0);
     const total = subtotal * 1.1;
-    const left = total - payments.reduce((acc, p) => acc + p.amount, 0);
+    const paid = payments.reduce((acc, p) => acc + p.amount, 0);
+    const left = total - paid
     return {
       subtotal,
       total,
+      paid, 
       left,
     };
   }, [products, payments]);
@@ -83,14 +87,12 @@ export default function Invoicing() {
           <TabsTrigger value="pagos">Pagos</TabsTrigger>
         </TabsList>
         <TabsContent value="productos">
-            <div className="content p-2 grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="col-span-1">
-                <ClientInput clientInfo={client} setClientInfo={setClient} />
-              </div>
-              <div className="col-span-1 md:col-span-2">
+            <div className="content p-2 grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-4">
+              
+              <div className="col-span-1 md:row-span-1">
                 <ProductInput addEntry={addProduct} />
               </div>
-              <div className="col-span-1 md:col-span-3">
+              <div className="col-span-1 md:col-span-2 md:row-span-2">
                 <ProductTable
                   products={products}
                   setProducts={setProducts}
@@ -101,6 +103,9 @@ export default function Invoicing() {
         </TabsContent>
         <TabsContent value="pagos">
             <div className="content p-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="col-span-1 md:row-span-1">
+                <ClientInput clientInfo={client} setClientInfo={setClient} />
+              </div>
               <div className="col-span-1">
                 <PaymentInput
                   addPayment={addPayment}

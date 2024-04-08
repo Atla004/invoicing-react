@@ -65,6 +65,19 @@ export default function PaymentTable({ payments, setPayments, amountLeft }: Paym
     enableSorting: false,
     enableColumnActions: false,
     enableColumnFilters: false,
+    enableDensityToggle: false,
+    enableGlobalFilter: false,
+    enableFullScreenToggle: false,
+    initialState : {
+      density: "compact"
+    },
+    muiTableContainerProps: {
+      sx: {
+        height: "280px",
+        maxHeight: "280px"
+      }
+    }
+    
   })
   return (
     <div className="shadow-xl p-4 rounded-md bg-white">
