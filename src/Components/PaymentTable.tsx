@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { CiTrash } from "react-icons/ci";
 import {
   MaterialReactTable,
@@ -66,8 +66,8 @@ export default function PaymentTable({ payments, setPayments, amountLeft }: Paym
     enableColumnActions: false,
     enableColumnFilters: false,
     enableDensityToggle: false,
-    enableGlobalFilter: false,
     enableFullScreenToggle: false,
+    enableHiding: false,
     initialState : {
       density: "compact"
     },
@@ -81,7 +81,7 @@ export default function PaymentTable({ payments, setPayments, amountLeft }: Paym
   })
   return (
     <div className="shadow-xl p-4 rounded-md bg-white">
-        <h2 className="text-2xl mb-4 font-bold">Pagos</h2>
+        <h2 className="text-lg mb-4 font-bold">Pagos</h2>
         <MaterialReactTable table={table}/>
         <div className="flex flex-row justify-end gap-4 mt-4">
             <h3 className="text-xl font-bold">Restante por pagar:</h3>

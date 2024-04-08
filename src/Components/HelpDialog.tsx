@@ -76,6 +76,10 @@ export default function HelpDialog({
                 <KeyCombo keys={["Ctrl", "Alt", "T"]}></KeyCombo>
                 <span>Cambiar tab</span>
             </div>
+            <div className="flex gap-2 justify-between items-center">
+                <KeyCombo keys={["Ctrl", "Alt", "O"]}></KeyCombo>
+                <span>Agregar pago</span>
+            </div>
         </div>
       </DialogContent>
     </Dialog>

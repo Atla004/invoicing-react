@@ -7,6 +7,8 @@ import PaymentTable from "../Components/PaymentTable";
 import { useMemo, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 import { useKeyCombination } from "@/hooks";
+import {atom, useAtom} from 'jotai'
+import ActionAlert from "@/Components/Alerts/ActionAlert";
 
 export type Payment = {
   method: string;
@@ -30,10 +32,21 @@ export type Client = {
   dir: string;
 };
 
+type InvoiceState = "draft" | "finalized" | "cancelled"
+
+const invoiceStateAtom = atom<InvoiceState>("draft")
+
 export default function Invoicing() {
   const [client, setClient] = useState<Client>({ name: "",surname: "" ,"pid_prefix": "V", pid: "", dir: "" });
   const [products, setProducts] = useState<ProductEntry[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
+
+  const [invoiceState, setInvoiceState] = useAtom(invoiceStateAtom)
+  const invoiceStateMap = {
+    "draft": "Borrador",
+    "finalized": "Finalizada",
+    "cancelled": "Anulada"
+  }
 
   const [activeTab, setActiveTab] = useState("productos");
   const tabs = ["productos", "pagos"];
@@ -58,6 +71,28 @@ export default function Invoicing() {
   const addPayment = (payment: Payment) => {
     setPayments([...payments, payment]);
   };
+
+  const facturar = () => {
+    if (invoiceState === "finalized") {
+      alert("Factura ya finalizada");
+      return;
+    }
+    else if (invoiceState === "cancelled") {
+      alert("Factura anulada");
+      return;
+    }
+    alert("Facturado");
+    setInvoiceState("finalized")
+  }
+
+  const anularFactura = () => {
+    if (invoiceState === "cancelled") {
+      alert("Factura ya anulada");
+      return;
+    }
+    alert("Factura anulada");
+    setInvoiceState("cancelled")
+  }
 
   const totals = useMemo(() => {
     const subtotal = products.reduce((acc, p) => acc + p.price * p.quantity, 0);
@@ -102,23 +137,48 @@ export default function Invoicing() {
             </div>
         </TabsContent>
         <TabsContent value="pagos">
-            <div className="content p-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="content p-2 grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-4">
               <div className="col-span-1 md:row-span-1">
                 <ClientInput clientInfo={client} setClientInfo={setClient} />
               </div>
-              <div className="col-span-1">
-                <PaymentInput
-                  addPayment={addPayment}
-                  amountLeft={totals.left}
-                />
-              </div>
-              <div className="col-span-1 md:col-span-2">
+              <div className="col-span-1 md:col-span-2 md:row-span-2">
                 <PaymentTable
                   payments={payments}
                   setPayments={setPayments}
                   amountLeft={totals.left}
                 />
               </div>
+              <div className="col-span-1 md:row-span-1">
+                <PaymentInput
+                  addPayment={addPayment}
+                  amountLeft={totals.left}
+                />
+              </div>
+            </div>
+            {/* boton de facturar */}
+            <div className="w-full flex flex-col md:flex-row gap-4 pl-4 items-center">
+              <div className="w-56">
+                <ActionAlert
+                  title="¿Estás seguro?"
+                  action={facturar}
+                  description="Estás a punto de finalizar la factura. No podrás modificarla después. ¿Estás seguro de que deseas continuar?"
+                  button="Facturar"
+                  buttonColor="green"
+                />
+              </div>
+              <div className="w-56">
+
+                <ActionAlert
+                  title="¿Estás seguro?"
+                  action={anularFactura}
+                  description="Estás a punto de anular la factura. Esta acción no se puede deshacer. ¿Estás seguro de que deseas continuar?"
+                  button="Anular Factura"
+                  buttonColor="red"
+                />
+              </div>
+              <p className="text-white font-bold text-xl">
+                Estado de la factura: {invoiceStateMap[invoiceState]}
+              </p>
             </div>
         </TabsContent>
       </Tabs>

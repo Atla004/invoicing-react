@@ -1,12 +1,15 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
 import { Payment } from "../Views/Invoicing";
 import { toast } from "sonner";
+import { useKeyCombination } from "@/hooks";
 interface PaymentInputProps {
     addPayment: (payment: Payment) => void;
     amountLeft: number;
 }
 
 export default function PaymentInput({ addPayment, amountLeft }: PaymentInputProps) {
+
+    const selectPaymentMethod = useRef<HTMLSelectElement>(null);
 
     const [payment, setPayment] = useState<Payment>({
         method: "EFECTIVO",
@@ -22,7 +25,6 @@ export default function PaymentInput({ addPayment, amountLeft }: PaymentInputPro
         return payment.method === "cash"
     }, [payment])
 
-    const currencies = ["BS", "USD"]
     const paymentMethods = [
         {
                 name: "EFECTIVO",
@@ -31,18 +33,18 @@ export default function PaymentInput({ addPayment, amountLeft }: PaymentInputPro
         },
         {
                 name: "TARJETA DE CREDITO",
-                banks: ["BNC", "VENEZUELA", "BANESCO"],
+                banks: ["Seleccionar Banco", "BNC", "VENEZUELA", "BANESCO"],
                 currencies: ["BS"]
         },  
         {
                 name: "TARJETA DE DEBITO",
-                banks: ["BNC", "VENEZUELA", "BANESCO"],
+                banks: ["Seleccionar Banco", "BNC", "VENEZUELA", "BANESCO"],
                 currencies: ["BS"]
 
         },
         {
                 name: "ZELLE",
-                banks: ["BOFA", "CHASE"],
+                banks: ["Seleccionar Banco", "BOFA", "CHASE"],
                 currencies: ["USD"]
         },
     ]
@@ -55,6 +57,10 @@ export default function PaymentInput({ addPayment, amountLeft }: PaymentInputPro
             toast.error("El monto ingresado es mayor al monto restante por pagar");
             return;
         }
+        if (payment.bank === "" && payment.method !== "EFECTIVO") {
+            toast.error("El método de pago seleccionado requiere un banco");
+            return;
+        }
         addPayment(payment);
         console.log(payment)
         setPayment({
@@ -64,13 +70,22 @@ export default function PaymentInput({ addPayment, amountLeft }: PaymentInputPro
         });
     }
 
+    useKeyCombination(() => {
+        if (selectPaymentMethod.current) {
+            selectPaymentMethod.current.focus();
+        }
+    }, ["ctrl", "alt", "o"]);
+
+
     return (
         <div className="shadow-xl p-4 rounded-md bg-white">
                 <div className="flex flex-col gap-2 flex-1">
-                    <h1 className="text-2xl font-bold">Ingresar pago</h1>
+                    <h1 className="text-lg font-bold">Ingresar pago</h1>
                     <div className="flex flex-row gap-1 justify-start items-center">
                     </div>
-                        <select className="h-8 w-full rounded-md border px-2 inline" value={payment.method} 
+                        <select className="h-8 w-full rounded-md border px-2 inline" 
+                        ref={selectPaymentMethod}
+                        value={payment.method} 
                         onChange={
                             (e) => {
                                 setPayment({

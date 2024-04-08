@@ -1,5 +1,6 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { CiTrash } from "react-icons/ci";
+import { toast } from "sonner";
 
 import {
   useMaterialReactTable,
@@ -17,6 +18,12 @@ interface ProductTableProps {
 }
 
 export default function ProductTable({ products, setProducts, amountLeft}: ProductTableProps) {
+
+  const amountLeftRef = useRef(amountLeft);
+
+  useEffect(() => {
+    amountLeftRef.current = amountLeft;
+  })
 
   useKeyCombination(() => {
     console.log("pressed");
@@ -58,42 +65,7 @@ export default function ProductTable({ products, setProducts, amountLeft}: Produ
         },
         {
             header: "Cantidad",
-            Cell: ({row}) => (
-                // btns to increase and decrease quantity
-                <div className="flex flex-row gap-4 w-full items-center">
-                    
-                    <button 
-                    className="font-bold text-md border w-8 h-8 rounded-md grid place-items-center hover:bg-red-500 hover:text-white transition-all"
-                    onClick={() => {
-                      console.log("reduce q")
-                      setProducts((prevProducts: ProductEntry[]) => {
-                        const newProducts = [...prevProducts]
-
-                        newProducts[row.index].quantity -= 1
-
-                        if (newProducts[row.index].quantity < 1) {
-                          newProducts[row.index].quantity =1
-                        }
-
-                        return newProducts
-                      });
-                    }}>-</button>
-                    <span>{row.original.quantity}</span>
-                    <button 
-                    className="font-bold text-md border w-8 h-8 rounded-md grid place-items-center hover:bg-blue-500 hover:text-white transition-all"
-                    onClick={() => {
-                      setProducts((prevProducts: ProductEntry[]) => {
-                        const newProducts = [...prevProducts]
-
-                        newProducts[row.index].quantity += 1
-
-                        return newProducts
-                      });
-
-                        
-                    }}>+</button>
-                </div>
-            ),
+            accessorKey: "quantity",
             size: 100,
         },
         {
@@ -108,7 +80,16 @@ export default function ProductTable({ products, setProducts, amountLeft}: Produ
             <button
               className="text-white bg-red-500 rounded-md p-1 w-8 h-8 hover:bg-red-700 transition-all grid place-items-center"
               onClick={() =>{
-                setProducts((prevProducts: ProductEntry[]) => prevProducts.filter((p) => p.code !== row.original.code));
+                setProducts((prevProducts: ProductEntry[]) => {
+                  const updatedProducts = prevProducts.filter((p) => p.code !== row.original.code);
+                  const updatedAmountLeft = amountLeftRef.current - (row.original.price * row.original.quantity);
+                  if (updatedAmountLeft >= 0) {
+                    return updatedProducts;
+                  }
+                  toast.error("No puedes eliminar un producto si el total es menor al monto pagado");
+                  return prevProducts;
+                  
+                });
               }
               }
             >
@@ -132,8 +113,8 @@ export default function ProductTable({ products, setProducts, amountLeft}: Produ
     enableGrouping: false,
     enableRowActions: false,
     enableDensityToggle: false,
-    enableGlobalFilter: false,
     enableFullScreenToggle: false,
+    enableHiding: false,
     initialState : {
       density: "compact"
     },

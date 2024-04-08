@@ -3,6 +3,7 @@ import DialogSearch from "./DialogSearch";
 import { CiSearch } from "react-icons/ci";
 import { Client } from "../Views/Invoicing";
 import { useKeyCombination } from "../hooks";
+import ActionAlert from "./Alerts/ActionAlert";
 
 interface ClientInputProps {
   clientInfo: Client;
@@ -46,8 +47,10 @@ export default function ClientInput({
 
   const saveClientButton = useRef<HTMLButtonElement>(null);
 
-  const saveClientInDB = async () => {
+  const saveClientInDB = () => {
+    alert("Cliente guardado");
     console.log(clientInfo);
+    setDisabled(true);
   }
 
   return (
@@ -146,9 +149,14 @@ export default function ClientInput({
             >
                 {disabled ? "Editar" : "Guardar"}
             </button>
-            <button className="col-span-1 bg-blue-500 text-white rounded-md p-2 w-full"
-                onClick={() => saveClientInDB()}
-            >Crear/Editar Cliente</button>
+            <ActionAlert
+              title="¿Estás seguro?"
+              description="¿Deseas guardar los cambios en el cliente? Esta acción no se puede deshacer."
+              action={saveClientInDB}
+              button="Nuevo cliente"
+              buttonColor="blue"
+            >
+            </ActionAlert>
         </div>
         
       </div>
