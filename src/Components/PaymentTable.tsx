@@ -10,17 +10,12 @@ import { Payment, } from "../Views/Invoicing";
 
 interface PaymentTableProps {
   payments: Payment[];
-  setPayments: (payments: Payment[]) => void;
+  setPayments: any;
   amountLeft: number;
 }
 
 export default function PaymentTable({ payments, setPayments, amountLeft }: PaymentTableProps) {
-  const removeProduct = (index: number) => {
-    const newPayments = [...payments];
-    newPayments.splice(index, 1);
-    console.log(index)
-    setPayments(newPayments);
-  }
+
 
 
   const columns = useMemo<MRT_ColumnDef<Payment>[]>(() => {
@@ -36,7 +31,7 @@ export default function PaymentTable({ payments, setPayments, amountLeft }: Paym
             size: 100,
         },
         {
-            accessorFn: (row) => "$" + row.amount,
+            accessorFn: (row) => "$" + row.amount.toFixed(2),
             header: "Cantidad",
             size: 50,
         },
@@ -46,7 +41,11 @@ export default function PaymentTable({ payments, setPayments, amountLeft }: Paym
           Cell: ({row}) => (
             <button
               className="text-white bg-red-500 rounded-md p-1 w-8 h-8 hover:bg-red-700 transition-all grid place-items-center"
-              onClick={() => removeProduct(row.index)}
+              onClick={() => {
+                setPayments((prev: Payment[]) => {
+                  return prev.filter((p) => p !== row.original);
+              });
+              }}
             >
               <CiTrash />
             </button>

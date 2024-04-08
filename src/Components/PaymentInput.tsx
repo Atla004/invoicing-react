@@ -1,7 +1,8 @@
-import { useMemo, useState, useRef } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import { Payment } from "../Views/Invoicing";
 import { toast } from "sonner";
 import { useKeyCombination } from "@/hooks";
+import { bsToUsd } from "@/functions";
 interface PaymentInputProps {
     addPayment: (payment: Payment) => void;
     amountLeft: number;
@@ -16,6 +17,23 @@ export default function PaymentInput({ addPayment, amountLeft }: PaymentInputPro
         bank: "",
         amount: 0,
     });
+
+    useEffect(() => {
+        // set currency to the first currency available for the selected payment method
+
+        const currency = paymentMethods.find((method) => method.name === payment.method)?.currencies[0];
+
+        if (currency) {
+            setCurrency({
+                name: currency,
+            });
+        }
+        else {
+            setCurrency({
+                name: "USD",
+            });
+        }
+    }, [payment.method])
 
     const [currency, setCurrency] = useState({
         name: "USD",
@@ -50,23 +68,35 @@ export default function PaymentInput({ addPayment, amountLeft }: PaymentInputPro
     ]
 
     const controlledAddPayment = () => {
-        if (payment.amount === 0) {
-            return;
+        console.log(currency.name)
+        const controlledPayment = {...payment}
+        // if amount has more than 2 decimal places, warn
+        if (controlledPayment.amount.toString().split(".")[1]?.length > 2) {
+            toast.warning("El monto ingresado tiene más de 2 decimales. Se truncará automaticamente.");
         }
-        if (payment.amount > amountLeft) {
+        controlledPayment.amount = parseFloat(controlledPayment.amount.toFixed(2));
+
+        if (controlledPayment.amount === 0) {
+            toast.error("El monto ingresado no puede ser 0");
+        }
+        if (currency.name === "BS") {
+            controlledPayment.amount = bsToUsd(controlledPayment.amount);
+        }
+        if (controlledPayment.amount > amountLeft) {
             toast.error("El monto ingresado es mayor al monto restante por pagar");
             return;
         }
-        if (payment.bank === "" && payment.method !== "EFECTIVO") {
+        if (controlledPayment.bank === "" && controlledPayment.method !== "EFECTIVO") {
             toast.error("El método de pago seleccionado requiere un banco");
             return;
         }
-        addPayment(payment);
+        addPayment(controlledPayment);
         console.log(payment)
         setPayment({
-            method: "cash",
+            method: "EFECTIVO",
             bank: "",
             amount: 0,
+            
         });
     }
 
@@ -135,7 +165,7 @@ export default function PaymentInput({ addPayment, amountLeft }: PaymentInputPro
                                 }
                             </select>
                             <input type="number" className="h-8 w-full rounded-md border px-2 inline text-right" step={0.01} 
-                            value={(payment.amount).toFixed(2)}
+                            value={payment.amount}
                             onChange={(e) => 
                                 setPayment({
                                     ...payment,
