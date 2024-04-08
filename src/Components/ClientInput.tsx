@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import DialogSearch from "./DialogSearch";
 import { CiSearch } from "react-icons/ci";
 import { Client } from "../Views/Invoicing";
@@ -16,24 +16,35 @@ export default function ClientInput({
   const [showModal, setShowModal] = useState(false);
   const [searchField, setSearchField] = useState("");
   const [disabled, setDisabled] = useState(false);
+  const [message, setMessage] = useState("");
+  const messages = {
+    pid: "Buscar cliente por ID...",
+    name: "Buscar cliente por nombre..."
+  }
 
   useKeyCombination(() => {
-    setShowModal(!showModal);
-    setSearchField('pid')    
+    setMessage(messages['pid']);    
+    // Si el modal se esta mostrando y se cambia el searchField, no se esconde
+    if (searchField === "pid" || showModal === false) setShowModal(!showModal);
+    setSearchField('pid')
   }, ["ctrl", "alt", "c"]);
 
   useKeyCombination(() => {
-    setShowModal(!showModal);
-    setSearchField('name')    
+    setMessage(messages['name']); 
+    // Si el modal se esta mostrando y se cambia el searchField, no se esconde
+    if (searchField === "name" || showModal === false) setShowModal(!showModal);
+    setSearchField('name') 
   }, ["ctrl", "alt", "n"]);
 
-  const handleSearchClick = (field: string) => {
+  
+  const handleSearchClick = (field: "pid"|"name") => {
+    setMessage(messages[field]);
     setShowModal(true);
     setSearchField(field);
   };
   const clientFields = ["pid", "name", "surname", "dir"];
 
-  const saveClientButton = document.getElementById("save-client");
+  const saveClientButton = useRef<HTMLButtonElement>(null);
 
   const saveClientInDB = async () => {
     console.log(clientInfo);
@@ -104,7 +115,7 @@ export default function ClientInput({
           />
         </div>
         <div className="grid grid-cols-2 gap-2">
-            <button id="save-client" className="col-span-1 bg-green-500 text-white rounded-md p-2 w-full"
+            <button ref={saveClientButton} className="col-span-1 bg-green-500 text-white rounded-md p-2 w-full"
                 onClick={() => setDisabled(!disabled)}
             >
                 {disabled ? "Editar" : "Guardar"}
@@ -122,7 +133,8 @@ export default function ClientInput({
           setShow={setShowModal}
           setData={setClientInfo}
           fields={clientFields}
-          focusOnClose={saveClientButton}
+          focusOnClose={saveClientButton.current}
+          message={message}
         />
     </div>
   );

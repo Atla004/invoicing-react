@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import DialogSearch from "./DialogSearch";
 import { CiSearch } from "react-icons/ci";
 import { ProductEntry } from "../Views/Invoicing";
@@ -11,6 +11,7 @@ interface ProductInputProps {
 export default function ProductInput({ addEntry }: ProductInputProps) {
   const [showModal, setShowModal] = useState(false);
   const [searchField, setSearchField] = useState("");
+  const [message, setMessage] = useState("");
   const [productInfo, setProductInfo] = useState<ProductEntry>({
     name: "",
     code: "",
@@ -18,14 +19,22 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
     quantity: 0,
     price: 0,
   });
+  const messages = {
+    code: "Buscar producto por código...",
+    name: "Buscar producto por nombre..."
+  }
 
   useKeyCombination(() => {
-    setShowModal(!showModal);
+    setMessage(messages['code']);
+    // Si el modal se esta mostrando y se cambia el searchField, no se esconde
+    if (searchField === "code" || showModal === false) setShowModal(!showModal);
     setSearchField("code");
   }, ["ctrl", "alt", "f"]);
 
   useKeyCombination(() => {
-    setShowModal(!showModal);
+    setMessage(messages['name']);
+    // Si el modal se esta mostrando y se cambia el searchField, no se esconde
+    if (searchField === "name" || showModal === false) setShowModal(!showModal);
     setSearchField("name");
   }, ["ctrl", "alt", "p"]);
 
@@ -50,13 +59,14 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
     });
   };
 
-  const handleSearchClick = (field: string) => {
+  const handleSearchClick = (field: "name"|"code") => {
+    setMessage(messages[field]);
     setShowModal(true);
     setSearchField(field);
   };
   const productFields = ["name", "code", "photourl", "price"];
 
-  const addMoreButton = document.getElementById("addMoreButton");
+  const addMoreButton = useRef<HTMLButtonElement>(null);
 
   return (
     <div className="shadow-xl p-4 rounded-md bg-white">
@@ -137,7 +147,7 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
                 }}
               />
               <button
-                id="addMoreButton"
+                ref={addMoreButton}
                 className=" bg-blue-500 text-white rounded-md w-8 h-8"
                 onClick={() =>
                   setProductInfo({
@@ -181,7 +191,8 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
         setShow={setShowModal}
         setData={controlledSetProductInfo}
         fields={productFields}
-        focusOnClose={addMoreButton}
+        focusOnClose={addMoreButton.current}
+        message={message}
       />
     </div>
   );

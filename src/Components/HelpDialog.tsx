@@ -20,11 +20,11 @@ export default function HelpDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" className="hover:bg-[rgba(255,255,255,0.16)]"><span className="mr-2 text-white">Ayuda</span>   
+        <Button variant="ghost" className="hover:bg-[hsla(0,0%,100%,0.2)]"><span className="mr-2 text-white">Ayuda</span>   
             <KeyCombo keys={["Ctrl", "Alt", "H"]}></KeyCombo>
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-full max-w-3xl max-h-dvh overflow-y-scroll">
+      <DialogContent className="w-full max-w-3xl max-h-dvh overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Ayuda</DialogTitle>
           <DialogDescription>

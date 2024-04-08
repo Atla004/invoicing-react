@@ -4,6 +4,7 @@ import { CiTrash } from "react-icons/ci";
 import {
   useMaterialReactTable,
   MRT_Table,
+  MaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
 
@@ -116,11 +117,13 @@ export default function ProductTable({ products, setProducts, amountLeft}: Produ
     enableSorting: false,
     enableColumnActions: false,
     enableColumnFilters: false,
+    enableGrouping: false,
+    enableRowActions: false,
   })
   return (
     <div className="shadow-xl p-4 rounded-md bg-white">
         <h2 className="text-lg font-bold">Productos</h2>
-        <MRT_Table table={table}/>
+        <MaterialReactTable table={table}/>
         
         <div className="flex flex-row justify-end gap-4 mt-4">
             <h3 className="text-md font-bold">Subtotal:</h3>
