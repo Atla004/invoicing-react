@@ -2,15 +2,11 @@ import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger,
   DialogClose,
   DialogFooter,
 } from "@/Components/ui/dialog";
 import { Button } from "@/Components/ui/button";
-import { CiSearch } from "react-icons/ci";
 
 interface DialogSearchProps {
   table: string;
