@@ -4,7 +4,7 @@ import ProductInput from "../Components/ProductInput";
 import PaymentInput from "../Components/PaymentInput";
 import ProductTable from "../Components/ProductTable";
 import PaymentTable from "../Components/PaymentTable";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 import { useKeyCombination } from "@/hooks";
 import { useAtom } from "jotai";
@@ -36,7 +36,7 @@ export type Client = {
 };
 
 export type Invoice = {
-  id: string;
+  id: number;
   client: Client;
   products: ProductEntry[];
   payments: Payment[];
@@ -53,14 +53,7 @@ export default function Invoicing() {
   });
   const [products, setProducts] = useState<ProductEntry[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
-  const [invoiceId, _] = useState(
-    "00000000" +
-      Math.floor(Math.random() * 1000000)
-        .toString()
-        .slice(-6) +
-      "V" +
-      client.pid
-  );
+  const [invoiceId, setInVoiceID] = useState(1);
 
   const [invoiceState, setInvoiceState] = useAtom(invoiceStateAtom);
   const invoiceStateMap = {
@@ -120,9 +113,12 @@ export default function Invoicing() {
   }, [products, payments]);
 
   const amountLeftRef = useRef(totals.left);
-  const facturar = () => {
-    console.log(amountLeftRef.current);
-    console.log(totals.left)
+  useEffect(() => {
+    amountLeftRef.current = totals.left;
+  });
+  const facturar = async () => {
+    // validate
+    console.log(amountLeftRef.current)
     if (invoiceState === "finalized") {
       toast.error("Factura ya finalizada");
       return;
@@ -131,7 +127,6 @@ export default function Invoicing() {
       toast.error("Factura anulada");
       return;
     }
-    
     else if (amountLeftRef.current > 0) {
       toast.error("Falta pagar la factura");
       return;
@@ -149,8 +144,36 @@ export default function Invoicing() {
       return;
     }
     setFacturarDialogState(false);
-    setInvoiceState("finalized");
-    window.print();
+    
+    const body = {
+      client,
+      products,
+      payments,
+    };
+
+    const res = await fetch("http://127.0.0.1:5000/createInvoice", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (res.ok) {
+      type Response = {
+        result: {
+          message: string;
+          invoice_id: string;
+        }
+      }
+      const data: Response = await res.json();
+      setInvoiceState("finalized");
+      setInVoiceID(parseInt(data.result.invoice_id));
+      toast.success("Factura finalizada");
+      window.print();
+    } else {
+      toast.error("Error al guardar la factura en la base de datos");
+    }
   };
 
   const anularFactura = () => {

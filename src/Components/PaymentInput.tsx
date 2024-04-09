@@ -3,12 +3,16 @@ import { Payment } from "../Views/Invoicing";
 import { toast } from "sonner";
 import { useKeyCombination } from "@/hooks";
 import { bsToUsd } from "@/functions";
+import { invoiceStateAtom } from "@/Atoms/atoms";
+import { useAtomValue } from "jotai";
 interface PaymentInputProps {
     addPayment: (payment: Payment) => void;
     amountLeft: number;
 }
 
 export default function PaymentInput({ addPayment, amountLeft }: PaymentInputProps) {
+
+    const invoiceState = useAtomValue(invoiceStateAtom);
 
     const selectPaymentMethod = useRef<HTMLSelectElement>(null);
 
@@ -17,7 +21,6 @@ export default function PaymentInput({ addPayment, amountLeft }: PaymentInputPro
         bank: "",
         amount: 0,
     });
-
     useEffect(() => {
         // set currency to the first currency available for the selected payment method
 
@@ -36,7 +39,7 @@ export default function PaymentInput({ addPayment, amountLeft }: PaymentInputPro
     }, [payment.method])
 
     const [currency, setCurrency] = useState({
-        name: "USD",
+        name: "BS",
     });
 
     const isBankDisabled = useMemo(() => {
@@ -70,6 +73,12 @@ export default function PaymentInput({ addPayment, amountLeft }: PaymentInputPro
     const controlledAddPayment = () => {
         console.log(currency.name)
         const controlledPayment = {...payment}
+
+        if (invoiceState !== "draft") {
+            toast.error("No puedes agregar pagos a una factura finalizada o anulada");
+            return;
+        }
+        
         // if amount has more than 2 decimal places, warn
         if (controlledPayment.amount.toString().split(".")[1]?.length > 2) {
             toast.warning("El monto ingresado tiene más de 2 decimales. Se truncará automaticamente.");
@@ -99,6 +108,11 @@ export default function PaymentInput({ addPayment, amountLeft }: PaymentInputPro
             
         });
     }
+
+    const amountLeftRef = useRef(amountLeft);
+    useEffect(() => {
+        amountLeftRef.current = amountLeft;
+    });
 
     useKeyCombination(() => {
         if (selectPaymentMethod.current) {
@@ -173,6 +187,17 @@ export default function PaymentInput({ addPayment, amountLeft }: PaymentInputPro
                                 })
                             }
                             />
+                            {/* button that puts payment.amount == amount left */}
+                            <button className="bg-green-500 text-white rounded-md h-8 px-2"
+                                onClick={() => {
+                                    setPayment({
+                                        ...payment,
+                                        amount: amountLeftRef.current,
+                                    });
+                                }}
+                            >
+                                Llenar
+                            </button>
                     </div>
                     
                     <button className="bg-green-500 text-white rounded-md p-2 w-full"
