@@ -1,4 +1,5 @@
 import { useEffect, useState, Suspense } from "react";
+import BarChartA from "../Components/BarChartA"
 import Navbar from "../Components/Navbar"
 import {
     ResizableHandle,
@@ -88,7 +89,7 @@ export default function Dashboard() {
         </Suspense>
 
         <div 
-        className="flex items-center justify-center w-full h-[500px]"
+        className="flex items-center justify-center w-full h-[800px]"
         >
         <ResizablePanelGroup
         direction="horizontal"
@@ -105,9 +106,9 @@ export default function Dashboard() {
 
                     <ResizableHandle />
                     <ResizablePanel defaultSize={75}>
-                        <div className="flex h-full items-center justify-center p-6">
-                        <span className="font-semibold">Three</span>
-                        </div>
+  
+                            <BarChartA />
+
                     </ResizablePanel>
                 </ResizablePanelGroup>
             </ResizablePanel>
