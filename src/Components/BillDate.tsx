@@ -2,15 +2,33 @@ import React, { useState } from 'react';
 import { ChevronRight, ChevronLeft } from "lucide-react"
 import {Button} from '@/Components/ui/button'; 
 
-export default function DateChanger() {
-  const [date, setDate] = useState(new Date('2004-12-12'));
+interface BillDateProps {
+  setFilterDate: (date: string) => void;
+  filterDate: string;
+}
+
+export default function DateChanger({ setFilterDate, filterDate }: BillDateProps) {
+  const [date, setDate] = useState(new Date(`${filterDate}T00:00`));
+  console.log(date,'=', filterDate);
 
   const handlePreviousDay = () => {
-    setDate(prevDate => new Date(prevDate.setDate(prevDate.getDate() - 1)));
+    setDate(prevDate => {
+      const newDate = new Date(prevDate);
+      newDate.setDate(newDate.getDate() - 1);
+      const newDateString = newDate.toISOString().split('T')[0];
+      setFilterDate(newDateString);  // Update filterDate
+      return newDate;
+    });
   };
-
+  
   const handleNextDay = () => {
-    setDate(prevDate => new Date(prevDate.setDate(prevDate.getDate() + 1)));
+    setDate(prevDate => {
+      const newDate = new Date(prevDate);
+      newDate.setDate(newDate.getDate() + 1);
+      const newDateString = newDate.toISOString().split('T')[0];
+      setFilterDate(newDateString);  // Update filterDate
+      return newDate;
+    });
   };
 
   return (
