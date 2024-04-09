@@ -92,7 +92,7 @@ export default function Dashboard() {
         >
         <ResizablePanelGroup
         direction="horizontal"
-        className="h-[500px] w-[500px]"
+        className="h-full w-1000"
         >
 
     
