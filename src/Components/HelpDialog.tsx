@@ -89,6 +89,13 @@ export default function HelpDialog({
                 <span>Anular Factura</span>
             </div>
         </div>
+        <h2 className="text-lg font-bold">Dashboard</h2>
+        <div className="flex flex-col md:flex-row md:flex-wrap gap-6">
+          <div className="flex gap-2 justify-between items-center">
+            <KeyCombo keys={["Ctrl", "Alt", "C"]}></KeyCombo>
+            <span>Cerrar Caja</span>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );
