@@ -35,20 +35,18 @@ export default function Dashboard() {
         </Suspense>
 
         <div 
-        className="flex items-center justify-center w-full h-[500px] bg-gray-200"
+        className="flex items-center justify-center w-full h-[500px]"
         >
         <ResizablePanelGroup
         direction="horizontal"
-        className="h-[500px] w-[500px] bg-gray-200"
+        className="h-[500px] w-[500px]"
         >
 
     
-            <ResizablePanel defaultSize={50}>
+            <ResizablePanel defaultSize={60}>
                 <ResizablePanelGroup direction="vertical">
                     <ResizablePanel defaultSize={25}>
-                        <BillCard 
-                        className="flex h-full items-center justify-center p-6"
-                        />
+                        <BillCard />
                         
                     </ResizablePanel>
 
@@ -63,10 +61,18 @@ export default function Dashboard() {
 
             <ResizableHandle />
 
-            <ResizablePanel defaultSize={50}>
-                <div className="flex h-[200px] items-center justify-center p-6">
-                <span className="font-semibold">One</span>
-                </div>
+            <ResizablePanel defaultSize={40}>
+            <ResizablePanelGroup direction="vertical">
+                    <ResizablePanel defaultSize={10}>
+                    </ResizablePanel>
+
+                    <ResizableHandle />
+                    <ResizablePanel defaultSize={90}>
+                        <div className="flex h-full items-center justify-center p-6">
+                        <span className="font-semibold">Three</span>
+                        </div>
+                    </ResizablePanel>
+                </ResizablePanelGroup>
             </ResizablePanel>
 
         </ResizablePanelGroup>
