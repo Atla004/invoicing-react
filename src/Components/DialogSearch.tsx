@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,6 +7,9 @@ import {
   DialogFooter,
 } from "@/Components/ui/dialog";
 import { Button } from "@/Components/ui/button";
+import { invoiceStateAtom } from "@/Atoms/atoms";
+import { useAtomValue } from "jotai";
+import { toast } from "sonner";
 
 interface DialogSearchProps {
   table: string;
@@ -35,6 +38,13 @@ export default function DialogSearch({
 }: DialogSearchProps) {
   const [searchResults, setSearchResults] = useState<SearchResults[]>([]);
   const [searchField, setSearchField] = useState("");
+
+  const invoiceState = useAtomValue(invoiceStateAtom);
+  const invoiceStateRef = useRef(invoiceState);
+
+  useEffect(() => {
+    invoiceStateRef.current = invoiceState;
+  });
   
   const search = async () => {
     if (searchField === "") return;
@@ -120,7 +130,11 @@ export default function DialogSearch({
                         })}
                       <button
                         onClick={() => {
-                          setData(result);
+                          
+                          if (invoiceStateRef.current === "draft" ) setData(result);
+                          else {
+                            toast.error("No puedes modificar una factura finalizada o anulada");
+                          }
                           setShow(false);
                           setSearchResults([]);
                           if (focusOnClose) {

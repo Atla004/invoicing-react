@@ -80,6 +80,14 @@ export default function HelpDialog({
                 <KeyCombo keys={["Ctrl", "Alt", "O"]}></KeyCombo>
                 <span>Agregar pago</span>
             </div>
+            <div className="flex gap-2 justify-between items-center">
+                <KeyCombo keys={["Ctrl", "Alt", "D"]}></KeyCombo>
+                <span>Facturar</span>
+            </div>
+            <div className="flex gap-2 justify-between items-center">
+                <KeyCombo keys={["Ctrl", "Alt", "R"]}></KeyCombo>
+                <span>Anular Factura</span>
+            </div>
         </div>
       </DialogContent>
     </Dialog>

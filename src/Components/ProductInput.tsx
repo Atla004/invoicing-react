@@ -3,6 +3,9 @@ import DialogSearch from "./DialogSearch";
 import { CiSearch } from "react-icons/ci";
 import { ProductEntry } from "../Views/Invoicing";
 import { useKeyCombination } from "../hooks";
+import { toast } from "sonner";
+import { invoiceStateAtom } from "@/Atoms/atoms";
+import { useAtomValue } from "jotai";
 
 interface ProductInputProps {
   addEntry: (entry: ProductEntry) => void;
@@ -12,10 +15,11 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
   const [showModal, setShowModal] = useState(false);
   const [searchField, setSearchField] = useState("");
   const [message, setMessage] = useState("");
+  const defaultPhotoUrl = "https://placehold.co/600x600?text=buscar+producto";
   const [productInfo, setProductInfo] = useState<ProductEntry>({
     name: "",
     code: "",
-    photourl: "https://placehold.co/600x600?text=buscar+producto",
+    photourl: defaultPhotoUrl,
     quantity: 0,
     price: 0,
   });
@@ -23,6 +27,7 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
     code: "Buscar producto por código...",
     name: "Buscar producto por nombre..."
   }
+  const invoiceState = useAtomValue(invoiceStateAtom);
 
   useKeyCombination(() => {
     setMessage(messages['code']);
@@ -48,7 +53,22 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
   };
 
   const controlledAddEntry = (entry: ProductEntry) => {
-    if (entry.quantity === 0) return;
+    if (entry.quantity === 0) {
+      toast.error("La cantidad no puede ser 0");
+      return;
+    };
+    if (entry.name === "" || entry.code === "" ) {
+      toast.error("Por favor, rellene todos los campos");
+      return;
+    }
+    if (entry.photourl === defaultPhotoUrl) {
+      toast.error("Por favor, seleccione un producto válido");
+      return;
+    }
+    if (invoiceState === "finalized" || invoiceState === "cancelled") {
+      toast.error("No se puede agregar productos a una factura finalizada o anulada");
+      return;
+    }
     addEntry(entry);
     setProductInfo({
       name: "",

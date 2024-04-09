@@ -20,6 +20,14 @@ interface AlertDialogProps {
     buttonColor: "red" | "green" | "blue" | "yellow" ;
 }
 
+/**
+ * Dialogo de alerta con dos botones, uno para cancelar y otro para continuar
+ * @param action Función a ejecutar al hacer click en el botón de continuar
+ * @param title Título del dialogo
+ * @param description Descripción del dialogo
+ * @param button Texto del botón de acción
+ * @param buttonColor Color del botón de acción
+ */
 export default function ActionAlert({ action, title, description, button, buttonColor }: AlertDialogProps) {
 
   return (
