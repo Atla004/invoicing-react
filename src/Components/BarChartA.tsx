@@ -1,17 +1,11 @@
 import * as React from "react"
 import { Bar, BarChart, ResponsiveContainer } from "recharts"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/Components/ui/card"
+import {Card} from "@/Components/ui/card"
 
 
 const data = [
   {
-    goal: 500,
+    goal: 200,
   },
   {
     goal: 300,
