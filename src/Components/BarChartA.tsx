@@ -1,5 +1,12 @@
 import * as React from "react"
 import { Bar, BarChart, ResponsiveContainer } from "recharts"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/Components/ui/card"
 
 
 const data = [
@@ -46,6 +53,7 @@ const data = [
 
 export default function BarChartA() {
   return (
+    <Card className="w-[350px]">
     <div className="mt-3 h-[120px]">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data}>
@@ -61,5 +69,6 @@ export default function BarChartA() {
         </BarChart>
       </ResponsiveContainer>
     </div>
+    </Card>
   )
 }
