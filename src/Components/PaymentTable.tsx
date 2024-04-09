@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { CiTrash } from "react-icons/ci";
 import { useAtomValue } from "jotai";
 import { invoiceStateAtom } from "../Atoms/atoms";
@@ -20,6 +20,12 @@ interface PaymentTableProps {
 export default function PaymentTable({ payments, setPayments, amountLeft }: PaymentTableProps) {
 
   const invoiceState = useAtomValue(invoiceStateAtom);
+
+  const invoiceStateRef = useRef(invoiceState);
+
+  useEffect(() => {
+    invoiceStateRef.current = invoiceState;
+  });
 
   const columns = useMemo<MRT_ColumnDef<Payment>[]>(() => {
     return [
@@ -45,15 +51,13 @@ export default function PaymentTable({ payments, setPayments, amountLeft }: Paym
             <button
               className="text-white bg-red-500 rounded-md p-1 w-8 h-8 hover:bg-red-700 transition-all grid place-items-center"
               onClick={() => {
+                if (invoiceStateRef.current !== "draft") {
+                  toast.error("No puedes modificar una factura finalizada o anulada");
+                  return;
+                }
                 setPayments((prev: Payment[]) => {
-                  if (invoiceState !== "draft") {
-                    toast.error("No puedes eliminar pagos de una factura finalizada o anulada");
-                    return prev;
-                  }
-                    
                   return prev.filter((p) => p !== row.original);
-                  
-              });
+                });
               }}
             >
               <CiTrash />
