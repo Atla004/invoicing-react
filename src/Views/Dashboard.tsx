@@ -4,9 +4,8 @@ import BillDate from "../Components/BillDate";
 import Navbar from "../Components/Navbar";
 import TableCard from "@/Components/TableCard";
 import BillCard from "../Components/BillCard";
-import { Button } from "@/Components/ui/button";
 import ActionAlertProg from "@/Components/Alerts/ActionAlertProg";
-
+import { useKeyCombination } from "@/hooks";
 
 type HelloResponse = {
     message: string;
@@ -15,21 +14,22 @@ type HelloResponse = {
 export default function Dashboard() {
     const [message, setMessage] = useState<HelloResponse>({message: ""});
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [open, setOpen] = useState(false);
+    const [openCerrarCaja, setCerrarCaja] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
             const response = await fetch("http://127.0.0.1:5000/hello");
             const data = await response.json();
-
-            // Agregar un retraso artificial de 2 segundos
-        
             setMessage(data);
             setIsLoading(false);
           
         }
         fetchData();
     }, [])
+
+    useKeyCombination(() => {
+        setCerrarCaja(true);
+      }, ["ctrl", "alt", "c"]);
 
     const cerrarCaja = () => {
         console.log('El usuario hizo clic en el botón de acción');
@@ -63,8 +63,8 @@ export default function Dashboard() {
                             description="Estas seguro que quieres cerar caja el dia de hoy"
                             button="Cerrar Caja"
                             buttonColor="red"
-                            open={open}
-                            setOpen={setOpen}
+                            open={openCerrarCaja}
+                            setOpen={setCerrarCaja}
                         />
                     </div>
                     <div className="col-span-2 md:col-span-2 md:row-span-2 flex items-center justify-center">
