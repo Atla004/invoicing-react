@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer } from "recharts"
+import { Bar, BarChart, ResponsiveContainer,YAxis,Tooltip } from "recharts"
 import {Card} from "@/Components/ui/card"
 
 
@@ -47,10 +47,12 @@ const data = [
 
 export default function BarChartA() {
   return (
-    <Card className="w-[350px]">
-    <div className="mt-3 h-[120px]">
-      <ResponsiveContainer width="100%" height="100%">
+    <Card>
+    <div className="w-full h-100">
+      <ResponsiveContainer width="100%" height="100%" minWidth={300} minHeight={300}>
         <BarChart data={data}>
+          <YAxis />
+          <Tooltip />
           <Bar
             dataKey="goal"
             style={
@@ -59,6 +61,7 @@ export default function BarChartA() {
                 opacity: 0.9,
               } as React.CSSProperties
             }
+            barSize={30}
           />
         </BarChart>
       </ResponsiveContainer>
