@@ -1,14 +1,7 @@
 import { useEffect, useState, Suspense } from "react";
 import BarChartA from "../Components/BarChartA"
 import Navbar from "../Components/Navbar"
-import {
-    ResizableHandle,
-    ResizablePanel,
-    ResizablePanelGroup,
-} from "@/Components/ui/resizable"
-
 import TableCard from "@/Components/TableCard";
-
 import BillCard from "../Components/BillCard"
 
 type HelloResponse = {
@@ -37,47 +30,15 @@ export default function Dashboard() {
         </Suspense>
 
         <div 
-        className="flex items-center justify-center w-full h-[800px]"
+        className="items-center justify-center w-full h-[800px]"
         >
-        <ResizablePanelGroup
-        direction="horizontal"
-        className="h-full w-1000"
-        >
-
-    
-            <ResizablePanel defaultSize={60}>
-                <ResizablePanelGroup direction="vertical">
-                    <ResizablePanel defaultSize={25}>
-                        <BillCard />
-                        
-                    </ResizablePanel>
-
-                    <ResizableHandle />
-                    <ResizablePanel defaultSize={75}>
-  
-                            <BarChartA />
-
-                    </ResizablePanel>
-                </ResizablePanelGroup>
-            </ResizablePanel>
-
-            <ResizableHandle />
-
-            <ResizablePanel defaultSize={40}>
-            <ResizablePanelGroup direction="vertical">
-                    <ResizablePanel defaultSize={10}>
-                    </ResizablePanel>
-
-                    <ResizableHandle />
-                    <ResizablePanel defaultSize={90}>
-                        <div className="flex h-full items-center justify-center p-6">
-                        <TableCard></TableCard>
-                        </div>
-                    </ResizablePanel>
-                </ResizablePanelGroup>
-            </ResizablePanel>
-
-        </ResizablePanelGroup>
+            <div className="flex">
+                <BillCard></BillCard>
+            </div>
+            <div className="flex">
+                <BarChartA></BarChartA>
+                <TableCard></TableCard>
+            </div>
         </div>
                 
     </>
