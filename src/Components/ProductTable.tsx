@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef } from "react";
 import { CiTrash } from "react-icons/ci";
 import { toast } from "sonner";
+import { invoiceStateAtom } from "@/Atoms/atoms";
+import { useAtomValue } from "jotai";
 
 import {
   useMaterialReactTable,
@@ -18,7 +20,7 @@ interface ProductTableProps {
 }
 
 export default function ProductTable({ products, setProducts, amountLeft}: ProductTableProps) {
-
+  const invoiceState = useAtomValue(invoiceStateAtom);
   const amountLeftRef = useRef(amountLeft);
 
   useEffect(() => {
@@ -83,11 +85,15 @@ export default function ProductTable({ products, setProducts, amountLeft}: Produ
                 setProducts((prevProducts: ProductEntry[]) => {
                   const updatedProducts = prevProducts.filter((p) => p.code !== row.original.code);
                   const updatedAmountLeft = amountLeftRef.current - (row.original.price * row.original.quantity);
-                  if (updatedAmountLeft >= 0) {
-                    return updatedProducts;
+                  if (updatedAmountLeft <= 0) {
+                    toast.error("No puedes eliminar un producto si el total es menor al monto pagado");
+                    return prevProducts;
                   }
-                  toast.error("No puedes eliminar un producto si el total es menor al monto pagado");
-                  return prevProducts;
+                  else if (invoiceState !== "draft") {
+                    toast.error("No puedes eliminar productos de una factura finalizada o anulada");
+                    return prevProducts;
+                  }
+                  return updatedProducts;
                   
                 });
               }

@@ -1,11 +1,12 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo} from "react";
 import DialogSearch from "./DialogSearch";
 import { CiSearch } from "react-icons/ci";
 import { Client } from "../Views/Invoicing";
 import { useKeyCombination } from "../hooks";
 import ActionAlert from "./Alerts/ActionAlert";
 import { toast } from "sonner";
-
+import { invoiceStateAtom } from "@/Atoms/atoms";
+import { useAtomValue } from "jotai";
 interface ClientInputProps {
   clientInfo: Client;
   setClientInfo: (client: Client) => void;
@@ -17,8 +18,9 @@ export default function ClientInput({
 }: ClientInputProps) {
   const [showModal, setShowModal] = useState(false);
   const [searchField, setSearchField] = useState("");
-  const [disabled, setDisabled] = useState(false);
   const [message, setMessage] = useState("");
+  const invoiceState = useAtomValue(invoiceStateAtom);
+  const isDisabled = useMemo(() => invoiceState === "cancelled" ||invoiceState === "finalized", [invoiceState]);
   const messages = {
     pid: "Buscar cliente por ID...",
     name: "Buscar cliente por nombre..."
@@ -79,11 +81,9 @@ export default function ClientInput({
       const data: Response = await res.json();
       if (data.result.action === "insert") {
         toast.success("Cliente guardado exitosamente");
-        setDisabled(true);
       }
       else {
         toast.success("Cliente actualizado exitosamente");
-        setDisabled(true);
       }
     }
     else {
@@ -103,7 +103,7 @@ export default function ClientInput({
             placeholder="Name"
             maxLength={50}
             value={clientInfo.name}
-            disabled={disabled}
+            disabled={isDisabled}
             onChange={(e) => {
               setClientInfo({
                 ...clientInfo,
@@ -118,7 +118,7 @@ export default function ClientInput({
             placeholder="Surname"
             maxLength={500}
             value={clientInfo.surname}
-            disabled={disabled}
+            disabled={isDisabled}
             onChange={(e) => {
               setClientInfo({
                 ...clientInfo,
@@ -140,6 +140,7 @@ export default function ClientInput({
               "pid_prefix": e.target.value
             })}
             value={clientInfo["pid_prefix"]}
+            disabled={isDisabled}
           >
             <option value="V">V</option>
             <option value="J">J</option>
@@ -150,7 +151,7 @@ export default function ClientInput({
             placeholder="ID"
             id="client-pid"
             maxLength={30}
-            disabled={disabled}
+            disabled={isDisabled}
             className="h-8 w-full rounded-md border  px-2 inline"
             value={clientInfo.pid}
             onChange={(e) => {
@@ -171,7 +172,7 @@ export default function ClientInput({
           <input
             type="text"
             id="client"
-            disabled={disabled}
+            disabled={isDisabled}
             placeholder="Direccion"
             maxLength={100}
             className="h-8 w-full rounded-md border px-2 inline"
@@ -184,17 +185,12 @@ export default function ClientInput({
             }}
           />
         </div>
-        <div className="grid grid-cols-2 gap-2">
-            <button ref={saveClientButton} className="col-span-1 bg-green-500 text-white rounded-md p-2 w-full"
-                onClick={() => setDisabled(!disabled)}
-            >
-                {disabled ? "Editar" : "Guardar"}
-            </button>
+        <div className="">
             <ActionAlert
               title="¿Estás seguro?"
               description="¿Deseas guardar los cambios en el cliente? Esta acción no se puede deshacer."
               action={saveClientInDB}
-              button="Nuevo cliente"
+              button="Crear/Actualizar Cliente"
               buttonColor="blue"
             >
             </ActionAlert>
