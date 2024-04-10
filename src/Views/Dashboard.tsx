@@ -1,4 +1,4 @@
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, /*Suspense*/ } from "react";
 import BarChartA from "../Components/BarChartA"
 import Navbar from "../Components/Navbar"
 import {
@@ -18,12 +18,15 @@ type HelloResponse = {
 export default function Dashboard() {
 
     const [message, setMessage] = useState<HelloResponse>({message: ""});
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
+            setIsLoading(true);
             const response = await fetch("http://127.0.0.1:5000/hello");
             const data = await response.json();
             setMessage(data);
+            setIsLoading(false);
         }
         fetchData();
     }, [])
@@ -32,9 +35,8 @@ export default function Dashboard() {
     <>
         <Navbar></Navbar>
         <h1 className="text-3xl">Dashboard</h1>
-        <Suspense fallback={<p>Cargando...</p>}>
-            {message.message && <p>{message.message}</p>}
-        </Suspense>
+        {isLoading ? <p>Cargando...</p> : message.message && <p>{message.message}</p>}
+
 
         <div 
         className="flex items-center justify-center w-full h-[800px]"
