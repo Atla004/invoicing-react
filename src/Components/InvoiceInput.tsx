@@ -4,8 +4,8 @@ import DialogSearch from "./DialogSearch";
 import { CiSearch } from "react-icons/ci";
   
   
-  interface InvoiceInputProps {
-    addEntry: (entry: { code: string; clientName: string; totalAmount: number }) => void;
+interface InvoiceInputProps {
+    addEntry: (entry: { code: string; clientName: string; totalAmount: number; }) => void;
   }
   
   export default function InvoiceInput({ addEntry }: InvoiceInputProps) {
@@ -50,7 +50,7 @@ import { CiSearch } from "react-icons/ci";
     return (
       <div className="shadow-xl p-4 rounded-md bg-white">
         <div className="flex flex-col gap-4">
-          <h1 className="text-lg font-bold">Búsqueda de Facturas</h1>
+          
           <Calendar
           mode="single"
           selected={date}
