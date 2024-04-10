@@ -145,7 +145,7 @@ export default function Dashboard() {
     console.log(filterDate);
     useEffect(() => {
         const fetchData = async () => {
-            setIsLoading(true);
+            //setIsLoading(true);
             const response = await fetch("http://127.0.0.1:5000/hello");
             const data = await response.json();
             setMessage(data);
