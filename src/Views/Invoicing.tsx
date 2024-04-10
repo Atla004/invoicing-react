@@ -177,7 +177,6 @@ export default function Invoicing() {
       setInvoiceState("finalized");
       setInVoiceID(parseInt(data.result.invoice_id));
       toast.success("Factura finalizada");
-      window.print();
     } else {
       toast.error("Error al guardar la factura en la base de datos");
     }
@@ -190,13 +189,28 @@ export default function Invoicing() {
     window.print();
   }, [invoiceId])
 
-  const anularFactura = () => {
+  const anularFactura = async () => {
     if (invoiceState === "cancelled" || invoiceState === "draft") {
       toast.error("No se puede anular una factura que no esté finalizada")
       return;
     }
-    toast.success("Factura anulada")
-    setInvoiceState("cancelled");
+    const body = {
+      invoice_id: invoiceId
+    }
+    setAnularFacturaDialogState(false);
+    const res = await fetch("http://127.0.0.1:5000/voidInvoice", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    if (res.ok) {
+      setInvoiceState("cancelled");
+      toast.success("Factura anulada");
+    } else {
+      toast.error("Error al anular la factura en la base de datos");
+    }
   };
 
 
