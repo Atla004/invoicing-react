@@ -2,10 +2,12 @@ import { useEffect, useState, /*Suspense*/ } from "react";
 import BarChartA from "../Components/BarChartA";
 import BillDate from "../Components/BillDate";
 import Navbar from "../Components/Navbar";
-import TableCard from "@/Components/TableCard";
+import TableCard from "@/Components/BillTableCard";
 import BillCard from "../Components/BillCard";
 import ActionAlertProg from "@/Components/Alerts/ActionAlertProg";
 import { useKeyCombination } from "@/hooks";
+import BillTableCard from "@/Components/BillTableCard";
+import { set } from "date-fns";
 
 type HelloResponse = {
     message: string;
@@ -95,7 +97,7 @@ const facturaYDetalles ={
 
 export default function Dashboard() {
     const [message, setMessage] = useState<HelloResponse>({message: ""});
-    //const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [openCerrarCaja, setCerrarCaja] = useState(false);
     const [filterDate, setFilterDate] = useState(new Date().toISOString().split('T')[0]); // fecha de la factura
     const [closingStatement, setClosingStatement] = useState(null); // array de los datos de cierre de caja
@@ -108,11 +110,12 @@ export default function Dashboard() {
 
 
     useEffect(() => {
+        setIsLoading(true);
         const fetchData = async () => {
             const body = {
                 date: filterDate
             };
-            const response = await fetch("127.0.0.1:5000/getClosingStatement", {
+            const response = await fetch("http://127.0.0.1:5000/getClosingStatement", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -122,9 +125,10 @@ export default function Dashboard() {
             const data = await response.json();
             console.log(data);
             setClosingStatement(data.result);
-            //setIsLoading(false);
-            console.log(closingStatement);
-            //setFilterDate(closingStatement.date);
+            setIsLoading(false);
+          //  console.log(closingStatement);
+           // console.log(facturaYDetalles.result);
+
 
         }
         fetchData();
@@ -140,12 +144,12 @@ export default function Dashboard() {
         console.log('La acción al cerrar caja');
     };
 
-/*
+
      //SOLO CARGA CON EL BACKEND ABIERTO
     if (isLoading) {
         return <p>Cargando...</p>;
     }
-*/
+
 
 
     return (
@@ -159,8 +163,8 @@ export default function Dashboard() {
                 <BillDate setFilterDate={setFilterDate} filterDate={filterDate} maxDate = {maxDate}></BillDate>
 
                     <div className="col-span-1 md:row-span-1">
-                        <BillCard type="total" result={facturaYDetalles.result}  />
-                        <BillCard type="average" result={facturaYDetalles.result}  />
+                        <BillCard type="total" result={closingStatement}  />
+                        <BillCard type="average" result={closingStatement}  />
                     </div>
                     <div className="col-span-2 md:col-span-2 md:row-span-2 flex items-center justify-center">
                         <ActionAlertProg
@@ -174,13 +178,15 @@ export default function Dashboard() {
                         />
                     </div>
                     <div className="col-span-2 md:col-span-2 md:row-span-2 flex items-center justify-center">
-                        <BarChartA type="total" invoices={facturaYDetalles.result.banks} />
-                        <BarChartA type="total" invoices={facturaYDetalles.result.methods} />
-                        <BarChartA type="total" invoices={facturaYDetalles.result.products} />
-                        <BarChartA type="sold" invoices={facturaYDetalles.result.products} />
+                        <BarChartA type="total" invoices={closingStatement.banks} />
+                        <BarChartA type="total" invoices={closingStatement.methods} />
+                        <BarChartA type="total" invoices={closingStatement.products} />
+                        <BarChartA type="sold" invoices={closingStatement.products} />
 
                     </div>
                     <div className="col-span-2 md:row-span-2">
+                        <BillTableCard invoices={closingStatement} />
+             
                     </div>
                 </div>
             </div>

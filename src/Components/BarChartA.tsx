@@ -23,15 +23,13 @@ interface BarChartAProps {
 
 export default function BarChartA({invoices, type }: BarChartAProps) {
   
-console.log('invop',invoices)
 
-console.log('type',type)
 
 const data = invoices.map(invoice => ({
   X: invoice.bank || invoice.method || invoice.name,
   Y: type? invoice[type] : invoice.total,
 }));
-console.log('data',data)
+
 
 let title;
 if (name === 'banks') {
