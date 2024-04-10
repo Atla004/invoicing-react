@@ -2,7 +2,6 @@ import { useEffect, useState, /*Suspense*/ } from "react";
 import BarChartA from "../Components/BarChartA";
 import BillDate from "../Components/BillDate";
 import Navbar from "../Components/Navbar";
-import TableCard from "@/Components/BillTableCard";
 import BillCard from "../Components/BillCard";
 import ActionAlertProg from "@/Components/Alerts/ActionAlertProg";
 import { useKeyCombination } from "@/hooks";
@@ -155,18 +154,7 @@ export default function Dashboard() {
     return (
         <>
             <Navbar></Navbar> 
-            <div className="p-2 w-full bg-gradient-to-tr from-sky-400 via-indigo-600 to-blue-700">
-                <h1 className="text-3xl">Dashboard</h1>
-                {message.message && <p>{message.message}</p>}
-
-                <div className="content p-2 grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-4">
-                <BillDate setFilterDate={setFilterDate} filterDate={filterDate} maxDate = {maxDate}></BillDate>
-
-                    <div className="col-span-1 md:row-span-1">
-                        <BillCard type="total" result={closingStatement}  />
-                        <BillCard type="average" result={closingStatement}  />
-                    </div>
-                    <div className="col-span-2 md:col-span-2 md:row-span-2 flex items-center justify-center">
+                    <div className="fixed top-10 right-10 m-4">
                         <ActionAlertProg
                             title="¿Estás seguro?"
                             action={cerrarCaja}
@@ -176,6 +164,20 @@ export default function Dashboard() {
                             open={openCerrarCaja}
                             setOpen={setCerrarCaja}
                         />
+                    </div>
+            <div>
+
+            </div>
+            <div className="p-2 w-full bg-gradient-to-tr from-sky-400 via-indigo-600 to-blue-700">
+            <BillDate setFilterDate={setFilterDate} filterDate={filterDate} maxDate = {maxDate}></BillDate>
+                <h1 className="text-3xl">Dashboard</h1>
+                {message.message && <p>{message.message}</p>}
+
+                <div className="content p-2 grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-4">
+
+                    <div className="col-span-1 md:row-span-1">
+                        <BillCard type="total" result={closingStatement}  />
+                        <BillCard type="average" result={closingStatement}  />
                     </div>
                     <div className="col-span-2 md:col-span-2 md:row-span-2 flex items-center justify-center">
                         <BarChartA type="total" invoices={closingStatement.banks} />
