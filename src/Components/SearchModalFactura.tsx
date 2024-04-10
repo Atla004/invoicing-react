@@ -88,6 +88,7 @@ result: {
       body: JSON.stringify(body),
   });
     const data = await response.json();
+    console.log(data);
     setFactura(data);
     
 }
@@ -97,7 +98,7 @@ useEffect(() => {
   
 }, []);
 
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
 
@@ -110,7 +111,7 @@ const totals = {
 
   return (
     <div>
-      <Button onClick={openModal}>ver</Button>
+      <Button onClick={openModal}>Ver</Button>
       <Modal isOpen={isOpen} onRequestClose={closeModal}>
         <Container>
           <h2>Factura {id}</h2>

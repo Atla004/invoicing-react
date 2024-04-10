@@ -36,6 +36,8 @@ import {
   DropdownMenuTrigger,
 } from "@/Components/ui/dropdown-menu"
 
+import SearchModalFactura from "../Components/SearchModalFactura"
+
 const data: Payment[] = [
   {
     id: "m5gr84i9",
@@ -126,14 +128,9 @@ export const columns: ColumnDef<Payment>[] = [
       const buttonAction = row.original;
 
       return (
-        <Button
-        variant="outline"
-        size="sm"
-        /*onClick={() => table.nextPage()}
-        disabled={!table.getCanNextPage()}*/
-      >
-        Ver
-        </Button>
+        <SearchModalFactura
+        id={100}
+    ></SearchModalFactura>
       )
     },
   },
