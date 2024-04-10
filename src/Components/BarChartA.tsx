@@ -1,69 +1,46 @@
 import * as React from "react"
 import { Bar, BarChart, ResponsiveContainer,YAxis,XAxis,Tooltip } from "recharts"
 import {Card} from "@/Components/ui/card"
+import { title } from "process";
 
 
 
 interface BarXY {
-  X: string;
-  totalAmount: number;
+  X: "bank" | "method" | "name";
+  Y: number;
 }
 
 interface Invoice {
-  invoice: string;
-  Banco: string;
-  totalAmount: string;
-  paymentMethod: string;
+  name: "bank" | "method" | "name"; 
+  total: number;
+  count?: number;
 }
 
 interface BarChartAProps {
-  type: number;
   invoices: Invoice[];
+  type?: "sold" | "total" ;
 }
 
-export default function BarChartA({ type, invoices }: BarChartAProps) {
-
-console.log(invoices)
-
+export default function BarChartA({invoices, type }: BarChartAProps) {
   
-let field;
+
+
+const data = invoices.map(invoice => ({
+  X: invoice.bank || invoice.method || invoice.name,
+  Y: type? invoice[type] : invoice.total,
+}));
+
+
 let title;
-switch (type) {
-  case 1:
-    field = 'Banco';
-    title = 'Monto por Banco';
-    break;
-  case 2:
-    field = 'paymentMethod';
-    title = 'Monto por Metodo de Pago';
-    break;
-  case 3:
-    field = 'invoice';
-    title = 'Monto por Factura';
-    break;
-  default:
-    throw new Error(`Invalid type: ${type}`);
+if (name === 'banks') {
+  title = 'Total por Banco';
+} else if (name === 'method') {
+  title = 'Toal por Metodo de Pago';
+} else if (name === 'products' && type === 'total') {
+  title = '  Total por Producto';
+} else if (name === 'products' && type === 'sold') {
+  title = 'Productos Vendidos';
 }
-
-const data = invoices.reduce<BarXY[]>((acc, invoice) => {
-  const amount = Number(invoice.totalAmount.replace('$', ''));
-
-  const index = acc.findIndex((item: BarXY) => item.X === invoice[field as keyof typeof invoice]);
-
-  if (index !== -1) {
-    // Update existing item
-    return [
-      ...acc.slice(0, index),
-      { X: invoice[field as keyof typeof invoice], totalAmount: acc[index].totalAmount + amount },
-      ...acc.slice(index + 1),
-    ];
-  } else {
-    // Add new item
-    return [...acc, { X: invoice[field as keyof typeof invoice], totalAmount: amount }];
-  }
-}, []);
-
-const maxAmount = Math.max(...data.map(item => item.totalAmount));
 
 return (
   <Card>
@@ -71,12 +48,12 @@ return (
     <div className="w-full h-100">
       <ResponsiveContainer width="100%" height="100%" minWidth={300} minHeight={300}>
         <BarChart data={data}>
-          <YAxis domain={[0, maxAmount]} tickFormatter={(tick) => `$${tick}`} />
+          <YAxis domain={[0, 'auto']} tickFormatter={(tick) => type === 'sold' ? tick : `$${tick}`} />
           <XAxis dataKey="X" />
           <Tooltip />
 
           <Bar
-            dataKey="totalAmount"
+            dataKey="Y"
             name="Total Amount"
             style={
               {
