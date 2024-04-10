@@ -8,90 +8,24 @@ import { useKeyCombination } from "@/hooks";
 import BillTableCard from "@/Components/BillTableCard";
 import { toast } from "sonner";
 import moment from 'moment';
+import { set } from "date-fns";
 
 type HelloResponse = {
     message: string;
 }
 
-const facturaYDetalles ={
-"result": {
-    "average_invoice": 54.63333333333333,
-    "banks": [
-        {
-            "bank": "CHASE",
-            "total": 22
-        },
-        {
-            "bank": "VENEZUELA",
-            "total": 137.5
-        },
-        {
-            "bank": "EFECTIVO",
-            "total": 4.4
-        }
-    ],
-    "date": "2024-04-09",
-    "day_total": 163.9,
-    "invoice_quantity": 3,
-    "invoices": [
-        {
-            "date": "2024-04-09",
-            "invoice_id": 6,
-            "name": "Tomas",
-            "pid": "30604530",
-            "pid_prefix": "V",
-            "surname": "Santana",
-            "total": 22,
-            "void": false
-        },
-        {
-            "date": "2024-04-09",
-            "invoice_id": 8,
-            "name": "Simon",
-            "pid": "1",
-            "pid_prefix": "V",
-            "surname": "Bolivar",
-            "total": 137.5,
-            "void": false
-        },
-        {
-            "date": "2024-04-09",
-            "invoice_id": 100,
-            "name": "Tomas",
-            "pid": "30604530",
-            "pid_prefix": "V",
-            "surname": "Santana",
-            "total": 4.4,
-            "void": false
-        }
-    ],
-    "methods": [
-        {
-            "method": "EFECTIVO",
-            "total": 4.4
-        },
-        {
-            "method": "TARJETA DE DEBITO",
-            "total": 137.5
-        },
-        {
-            "method": "ZELLE",
-            "total": 22
-        }
-    ],
-    "products": [
-        {
-            "name": "LAMPARA",
-            "sold": 5,
-            "total": 125
-        },
-        {
-            "name": "TENEDOR",
-            "sold": 12,
-            "total": 24
-        }
-    ]
-}
+
+
+type ClosingStatement = {
+    average_invoice: number | "";
+    banks: { bank: string, total: number }[];
+    date: string;
+    day_total: number;
+    invoice_quantity: number
+    invoices: { date: string, invoice_id: number, name: string, pid: string, pid_prefix: string, surname: string, total: number, void: boolean }[];
+    methods: { method: string, total: number }[];
+    products: { name: string, sold: number, total: number }[];
+    closing_time: string;
 }
 
 
@@ -100,7 +34,18 @@ export default function Dashboard() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [openCerrarCaja, setCerrarCaja] = useState(false);
     const [filterDate, setFilterDate] = useState(new Date().toISOString().split('T')[0]); // fecha de la factura
-    const [closingStatement, setClosingStatement] = useState(null); // array de los datos de cierre de caja
+    const [closingStatement, setClosingStatement] = useState<ClosingStatement>({
+        average_invoice: "",
+        banks: [],
+        date: "",
+        day_total: 0,
+        invoice_quantity: 0,
+        invoices: [],
+        methods: [],
+        products: [],
+        closing_time: "",
+    
+    }); // array de los datos de cierre de caja
     const [maxDate, setMaxDate] = useState(filterDate);
     const [closemessage, setClosemessage] = useState("Cerrar Caja");
 
@@ -132,8 +77,8 @@ export default function Dashboard() {
            }else{
             setClosemessage("Caja Cerrada");
            }
-           console.log(closemessage);
-           console.log(closingStatement.closing_time);
+           //console.log(closemessage);
+           //console.log(closingStatement.closing_time);
 
         }
         fetchData();
@@ -145,15 +90,27 @@ export default function Dashboard() {
         setCerrarCaja(true);
     }, ["ctrl", "alt", "c"]);
 
-    const cerrarCaja = () => {
+    const cerrarCaja = async () => {
         if (closingStatement.closing_time === "") {
           // Assign the current time to closing_time
-          closingStatement.closing_time = moment().format('HH:mm:ss');
+          const response = await fetch("http://127.0.0.1:5000/close", {
+            method: "POST",
+          })
           setClosemessage("Caja Cerrada");
+          if (response.ok) {
+            toast.success("Caja cerrada con éxito");
+            setClosingStatement((prev) => {
+                return {
+                    ...prev,
+                    closing_time: new Date().toISOString(),
+                };
+                });
+          }
         } else {
           const today = moment().format('YYYY-MM-DD');
           const closingDate = moment(closingStatement.date).format('YYYY-MM-DD');
-      
+
+            
           if (closingDate === today) {
             toast.error("La caja ya ha sido cerrada");
           } else {
@@ -173,6 +130,7 @@ export default function Dashboard() {
 
     return (
         <>
+        
             <Navbar></Navbar> 
                     <div className="fixed top-10 right-10 m-4">
                         <ActionAlertProg
@@ -188,7 +146,7 @@ export default function Dashboard() {
             <div>
 
             </div>
-            <div className="p-3 w-full bg-gradient-to-tr from-sky-400 via-indigo-600 to-blue-700">
+            <div className="p-8 w-full bg-gradient-to-tr from-sky-400 via-indigo-600 to-blue-700">
             <BillDate setFilterDate={setFilterDate} filterDate={filterDate} maxDate = {maxDate}></BillDate>
                 <h1 className="text-3xl">Dashboard</h1>
                 {message.message && <p>{message.message}</p>}

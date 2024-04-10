@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ChevronRight, ChevronLeft } from "lucide-react"
 import {Button} from '@/Components/ui/button'; 
 import { max } from 'date-fns';
+import { toast } from 'sonner';
 
 interface BillDateProps {
   setFilterDate: (date: string) => void;
@@ -41,6 +42,7 @@ const handleNextDay = () => {
     }
 
     // If newDate is greater or equal to maxDate, return the previous date
+    toast.error('No puedes seleccionar una fecha mayor a la fecha actual');
     return prevDate;
   });
 };
