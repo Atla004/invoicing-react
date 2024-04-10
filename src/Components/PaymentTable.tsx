@@ -7,9 +7,11 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
+import { useKeyCombination } from "@/hooks";
 
 import { Payment } from "../Views/Invoicing";
 import { toast } from "sonner";
+import { usdToBs } from "@/functions";
 
 interface PaymentTableProps {
   payments: Payment[];
@@ -23,9 +25,17 @@ export default function PaymentTable({ payments, setPayments, amountLeft }: Paym
 
   const invoiceStateRef = useRef(invoiceState);
 
+  const titleRef = useRef<HTMLHeadingElement>(null);
+
   useEffect(() => {
     invoiceStateRef.current = invoiceState;
   });
+
+  useKeyCombination(() => {
+    titleRef.current?.focus();
+    console.log("Focus on title");
+  }, ["ctrl", "alt", "i"])
+
 
   const columns = useMemo<MRT_ColumnDef<Payment>[]>(() => {
     return [
@@ -93,14 +103,15 @@ export default function PaymentTable({ payments, setPayments, amountLeft }: Paym
   })
   return (
     <div className="shadow-xl p-4 rounded-md bg-white">
-        <h2 className="text-lg mb-4 font-bold">Pagos {invoiceState}</h2>
+        <h2 tabIndex={0} ref={titleRef} className="text-lg mb-4 font-bold focus:border-2">Pagos {invoiceState}</h2>
         <MaterialReactTable table={table}/>
         <div className="flex flex-row justify-end gap-4 mt-4">
             <h3 className="text-xl font-bold">Restante por pagar:</h3>
             <h3 className="text-xl font-bold">
               ${
-                amountLeft.toFixed(2)
+                amountLeft.toFixed(2) + " "
               }
+              (Bs. {usdToBs(amountLeft).toFixed(2)})
             </h3>
         </div>
         

@@ -22,6 +22,7 @@ interface ProductTableProps {
 export default function ProductTable({ products, setProducts, amountLeft}: ProductTableProps) {
   const invoiceState = useAtomValue(invoiceStateAtom);
   const amountLeftRef = useRef(amountLeft);
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     amountLeftRef.current = amountLeft;
@@ -30,6 +31,11 @@ export default function ProductTable({ products, setProducts, amountLeft}: Produ
   useKeyCombination(() => {
     console.log("pressed");
   }, ["ctrl", "alt", "l"])
+
+  useKeyCombination(() => {
+    titleRef.current?.focus();
+    console.log("Focus on title");
+  }, ["ctrl", "alt", "u"])
 
   const subtotal = useMemo(() => {
     return products.reduce((acc, p) => acc + p.price * p.quantity, 0);
@@ -133,7 +139,7 @@ export default function ProductTable({ products, setProducts, amountLeft}: Produ
   })
   return (
     <div className="shadow-xl p-4 rounded-md bg-white">
-        <h2 className="text-lg font-bold">Productos</h2>
+        <h2 ref={titleRef} tabIndex={0} className="text-lg font-bold focus:border-2">Productos</h2>
         <MaterialReactTable table={table}/>
         
         <div className="flex flex-row justify-end gap-4 mt-4">
