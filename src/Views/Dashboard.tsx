@@ -6,7 +6,8 @@ import BillCard from "../Components/BillCard";
 import ActionAlertProg from "@/Components/Alerts/ActionAlertProg";
 import { useKeyCombination } from "@/hooks";
 import BillTableCard from "@/Components/BillTableCard";
-import { set } from "date-fns";
+import { toast } from "sonner";
+import moment from 'moment';
 
 type HelloResponse = {
     message: string;
@@ -101,6 +102,7 @@ export default function Dashboard() {
     const [filterDate, setFilterDate] = useState(new Date().toISOString().split('T')[0]); // fecha de la factura
     const [closingStatement, setClosingStatement] = useState(null); // array de los datos de cierre de caja
     const [maxDate, setMaxDate] = useState(filterDate);
+    const [closemessage, setClosemessage] = useState("Cerrar Caja");
 
     useEffect(() => {
       setMaxDate(filterDate);
@@ -122,12 +124,16 @@ export default function Dashboard() {
                 body: JSON.stringify(body),
             });
             const data = await response.json();
-            console.log(data);
             setClosingStatement(data.result);
             setIsLoading(false);
-          //  console.log(closingStatement);
-           // console.log(facturaYDetalles.result);
-
+           if(data.result.closing_time === "" && maxDate === filterDate){
+            console.log("Caja Abierta");
+            setClosemessage("Cerrar Caja");
+           }else{
+            setClosemessage("Caja Cerrada");
+           }
+           console.log(closemessage);
+           console.log(closingStatement.closing_time);
 
         }
         fetchData();
@@ -137,11 +143,25 @@ export default function Dashboard() {
 
     useKeyCombination(() => {
         setCerrarCaja(true);
-      }, ["ctrl", "alt", "c"]);
+    }, ["ctrl", "alt", "c"]);
 
     const cerrarCaja = () => {
-        console.log('La acción al cerrar caja');
+        if (closingStatement.closing_time === "") {
+          // Assign the current time to closing_time
+          closingStatement.closing_time = moment().format('HH:mm:ss');
+          setClosemessage("Caja Cerrada");
+        } else {
+          const today = moment().format('YYYY-MM-DD');
+          const closingDate = moment(closingStatement.date).format('YYYY-MM-DD');
+      
+          if (closingDate === today) {
+            toast.error("La caja ya ha sido cerrada");
+          } else {
+            toast.error("No puedes cerrar la caja de otros días");
+          }
+        }
     };
+
 
 
      //SOLO CARGA CON EL BACKEND ABIERTO
@@ -159,8 +179,8 @@ export default function Dashboard() {
                             title="¿Estás seguro?"
                             action={cerrarCaja}
                             description="Estas seguro que quieres cerar caja el dia de hoy"
-                            button="Cerrar Caja"
-                            buttonColor="red"
+                            button={closemessage}
+                            buttonColor={closemessage === "Caja Cerrada" ? "red" : "green"}
                             open={openCerrarCaja}
                             setOpen={setCerrarCaja}
                         />
@@ -168,7 +188,7 @@ export default function Dashboard() {
             <div>
 
             </div>
-            <div className="p-2 w-full bg-gradient-to-tr from-sky-400 via-indigo-600 to-blue-700">
+            <div className="p-3 w-full bg-gradient-to-tr from-sky-400 via-indigo-600 to-blue-700">
             <BillDate setFilterDate={setFilterDate} filterDate={filterDate} maxDate = {maxDate}></BillDate>
                 <h1 className="text-3xl">Dashboard</h1>
                 {message.message && <p>{message.message}</p>}

@@ -55,7 +55,7 @@ import {
 
 
   export default function BillTableCard({ invoices: result }: BillTableCardProps){
-    console.log('invoices', result);
+    //console.log('invoices', result);
 
     const invoices =result.invoices
 
