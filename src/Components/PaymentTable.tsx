@@ -103,7 +103,7 @@ export default function PaymentTable({ payments, setPayments, amountLeft }: Paym
   })
   return (
     <div className="shadow-xl p-4 rounded-md bg-white">
-        <h2 tabIndex={0} ref={titleRef} className="text-lg mb-4 font-bold focus:border-2">Pagos {invoiceState}</h2>
+        <h2 tabIndex={0} ref={titleRef} className="text-lg mb-4 font-bold focus:border-2">Pagos en Factura</h2>
         <MaterialReactTable table={table}/>
         <div className="flex flex-row justify-end gap-4 mt-4">
             <h3 className="text-xl font-bold">Restante por pagar:</h3>

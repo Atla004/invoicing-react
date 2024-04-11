@@ -99,7 +99,7 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
               type="text"
               id="product-name"
               className="h-8 w-full rounded-md border px-2 inline"
-              placeholder="Name"
+              placeholder="Nombre"
               value={productInfo.name}
               onChange={(e) => {
                 setProductInfo({
@@ -120,7 +120,7 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
               <input
                 type="text"
                 disabled
-                placeholder="Codigo"
+                placeholder="Código"
                 id="client"
                 className="h-8 w-full rounded-md border px-2 inline"
                 value={productInfo.code}

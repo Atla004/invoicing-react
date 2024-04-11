@@ -237,7 +237,7 @@ export default function Invoicing() {
       <div className="nonprint">
         <Navbar></Navbar>
         <div className="flex flex-col items-center min-h-screen bg-gradient-to-tr from-sky-400 via-indigo-600 to-blue-700">
-        <h1 className="text-5xl font-bold text-center text-white mt-6 mb-6">Panel de Facturación</h1>
+        <h1 className="text-5xl font-bold text-center text-white mt-4 mb-6">Panel de Facturación</h1>
           <Tabs
             defaultValue="productos"
             value={activeTab}
@@ -249,7 +249,7 @@ export default function Invoicing() {
               <TabsTrigger value="pagos">Pagos</TabsTrigger>
             </TabsList>
             <TabsContent value="productos">
-              <div className="content p-2 grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-4">
+              <div className="content p-2 grid grid-cols-1 md:grid-cols-3 md:grid-rows-1 gap-4">
                 <div className="col-span-1 md:row-span-1">
                   <ProductInput addEntry={addProduct} />
                 </div>
