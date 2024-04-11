@@ -49,10 +49,6 @@ export default function HelpDialog({
                 <KeyCombo keys={["Ctrl", "Alt", "3"]}></KeyCombo>
                 <span>Buscar facturas</span>
             </div>
-            <div className="flex justify-between items-center gap-2">
-                <KeyCombo keys={["Ctrl", "Alt", "4"]}></KeyCombo>
-                <span>Cierres diarios</span>
-            </div>
         </div>
         <h2 className="text-lg font-bold">Facturar</h2>
         <div className="flex flex-col md:flex-row md:flex-wrap gap-6">
