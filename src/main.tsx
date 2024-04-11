@@ -7,6 +7,7 @@ import Dashboard from './Views/Dashboard.tsx'
 import Search from './Views/Search.tsx'
 import Statements from './Views/Statements.tsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import FullInvoiceSearch from './Views/FullInvoiceSearch.tsx'
 
 const router = createBrowserRouter([
   {
@@ -26,8 +27,8 @@ const router = createBrowserRouter([
         element: <Search />
       },
       {
-        path: '/statements',
-        element: <Statements />
+        path: '/invoice/:invoiceId',
+        element: <FullInvoiceSearch />
       }
     ]
   }

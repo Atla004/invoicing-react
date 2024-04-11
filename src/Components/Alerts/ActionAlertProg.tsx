@@ -20,6 +20,7 @@ import {
       buttonColor: "red" | "green" | "blue" | "yellow" ;
       open: boolean;
       setOpen: (open: boolean) => void;
+      disabled?: boolean;
   }
   
   /**
@@ -32,12 +33,12 @@ import {
    * @param open Estado del dialogo
    * @param setOpen Función para cambiar el estado del dialogo
    */
-  export default function ActionAlert({ action, title, description, button, buttonColor, open, setOpen }: AlertDialogProps) {
+  export default function ActionAlertProg({ action, title, description, button, buttonColor, open, setOpen, disabled }: AlertDialogProps) {
   
     return (
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogTrigger asChild>
-          <button className={`bg-${buttonColor}-500 hover:bg-${buttonColor}-700 text-white rounded-md p-2 w-full`}>
+          <button className={`bg-${buttonColor}-500 hover:bg-${buttonColor}-700 text-white rounded-md p-2 w-full`} disabled={disabled}>
             {button}
           </button>
         </AlertDialogTrigger>
