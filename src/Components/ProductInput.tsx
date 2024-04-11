@@ -95,6 +95,7 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
           <h1 className="text-lg font-bold">Ingresar producto</h1>
           <div className="flex flex-row gap-1 justify-start items-center">
             <input
+            disabled
               type="text"
               id="product-name"
               className="h-8 w-full rounded-md border px-2 inline"
@@ -118,6 +119,7 @@ export default function ProductInput({ addEntry }: ProductInputProps) {
           <div className="flex flex-row gap-1 justify-between items-center">
               <input
                 type="text"
+                disabled
                 placeholder="Codigo"
                 id="client"
                 className="h-8 w-full rounded-md border px-2 inline"

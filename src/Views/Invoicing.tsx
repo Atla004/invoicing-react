@@ -237,7 +237,7 @@ export default function Invoicing() {
       <div className="nonprint">
         <Navbar></Navbar>
         <div className="flex flex-col items-center min-h-screen bg-gradient-to-tr from-sky-400 via-indigo-600 to-blue-700">
-        <h1 className="text-4xl font-bold text-center text-white mt-2 mb-6">Panel de Facturación</h1>
+        <h1 className="text-5xl font-bold text-center text-white mt-6 mb-6">Panel de Facturación</h1>
           <Tabs
             defaultValue="productos"
             value={activeTab}
