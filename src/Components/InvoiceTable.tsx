@@ -46,7 +46,7 @@ const data: Payment[] = [
     apellido: "Pérez",
     cedula: 19576321,
     prefijo: "V-",
-    fecha: "2021-09-01",
+    fecha: "2024-04-10",
   },
   {
     id: "3",
@@ -56,7 +56,7 @@ const data: Payment[] = [
     apellido: "García",
     cedula: 10876349,
     prefijo: "V-",
-    fecha: "2021-09-01",
+    fecha: "2024-04-11",
   },
   {
     id: "4",
@@ -66,7 +66,7 @@ const data: Payment[] = [
     apellido: "Bracho",
     cedula: 11579035,
     prefijo: "V-",
-    fecha: "2021-09-01",
+    fecha: "2024-04-10",
   },
   {
     id: "5",
@@ -76,7 +76,7 @@ const data: Payment[] = [
     apellido: "Colmenares",
     cedula: 31578239,
     prefijo: "V-",
-    fecha: "2021-09-01",
+    fecha: "2024-04-11",
   },
   {
     id: "6",
@@ -86,7 +86,7 @@ const data: Payment[] = [
     apellido: "Villalobos",
     cedula: 18463586,
     prefijo: "E-",
-    fecha: "2020-09-01",
+    fecha: "2024-04-09",
   },
   {
   id: "7",
@@ -96,7 +96,7 @@ const data: Payment[] = [
   apellido: "González",
   cedula: 12861354,
   prefijo: "J-",
-  fecha: "2021-09-01",
+  fecha: "2024-04-11",
 },
 ].map(item => ({
   ...item,
