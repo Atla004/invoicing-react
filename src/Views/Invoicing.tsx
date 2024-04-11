@@ -12,6 +12,7 @@ import ActionAlertProg from "@/Components/Alerts/ActionAlertProg";
 import FullInvoice from "@/Components/FullInvoice";
 import { toast } from "sonner";
 import { invoiceStateAtom } from "@/Atoms/atoms";
+import { Button } from "@/Components/ui/button";
 
 export type Payment = {
   method: string;
@@ -213,6 +214,22 @@ export default function Invoicing() {
     }
   };
 
+  const newInvoice = () => {
+    setClient({
+      name: "",
+      surname: "",
+      pid_prefix: "V",
+      pid: "",
+      dir: "",
+    });
+    setProducts([]);
+    setPayments([]);
+    setInVoiceID(0);
+    setInvoiceState("draft");
+    setActiveTab("productos");
+    toast.info("Campos limpiados");
+  }
+
 
 
   return (
@@ -290,9 +307,13 @@ export default function Invoicing() {
                 <p className="text-white font-bold text-xl">
                   Estado de la factura: {invoiceStateMap[invoiceState]}
                 </p>
+                <div className="ml-auto">
+                  <Button onClick={newInvoice}>Nueva factura</Button>
+                </div>
               </div>
             </TabsContent>
           </Tabs>
+
         </div>
       </div>
 
@@ -305,6 +326,7 @@ export default function Invoicing() {
             payments,
           }}
         ></FullInvoice>
+        
       </div>
 
     </>
