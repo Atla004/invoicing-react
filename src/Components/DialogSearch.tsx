@@ -114,6 +114,28 @@ export default function DialogSearch({
               </button>
             </div>
               <div id="results" className="flex-1 border overflow-y-auto h-72 rounded-md">
+                {/* headers */}
+                <div className="flex flex-row gap-2 p-2 justify-around items-center bg-slate-200">
+                  {fields &&
+                    fields.map((field) => {
+                      if (field === "photourl"){
+                        return (
+                          <p key={field} className="text-sm">
+                            FOTO
+                          </p>
+                        );
+                      } 
+                      if (field === "pid_prefix") {
+                        return null;
+                      }
+                      return (
+                        <p key={field} className="text-sm">
+                          {field.toUpperCase()}
+                        </p>
+                      );
+                    })}
+                  <p className="text-sm">Seleccionar</p>
+                </div>
                 {searchResults.map((result: SearchResults, index) => {
                   return (
                     <div
@@ -122,6 +144,21 @@ export default function DialogSearch({
                     >
                       {fields &&
                         fields.map((field) => {
+                          if (field === "photourl"){
+                            return (
+                              <img key={field} className="h-8 w-8" src={result[field]} alt="imagen" />
+                            );
+                          }
+                          if (field === "pid_prefix") {
+                            return null;
+                          }
+                          if (field === "pid") {
+                            return (
+                              <p key={field} className="text-sm">
+                              {result['pid_prefix']}-{result["pid"]}
+                            </p>
+                            )
+                          }
                           return (
                             <p key={field} className="text-sm">
                               {result[field]}

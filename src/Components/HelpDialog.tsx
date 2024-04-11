@@ -88,6 +88,14 @@ export default function HelpDialog({
                 <KeyCombo keys={["Ctrl", "Alt", "R"]}></KeyCombo>
                 <span>Anular Factura</span>
             </div>
+            <div className="flex gap-2 justify-between items-center">
+                <KeyCombo keys={["Ctrl", "Alt", "I"]}></KeyCombo>
+                <span>Enfocar la tabla de Pagos</span>
+            </div>
+            <div className="flex gap-2 justify-benpm ru devtween items-center">
+                <KeyCombo keys={["Ctrl", "Alt", "I"]}></KeyCombo>
+                <span>Enfocar la tabla de Productos</span>
+            </div>
         </div>
         <h2 className="text-lg font-bold">Dashboard</h2>
         <div className="flex flex-col md:flex-row md:flex-wrap gap-6">

@@ -12,6 +12,7 @@ import ActionAlertProg from "@/Components/Alerts/ActionAlertProg";
 import FullInvoice from "@/Components/FullInvoice";
 import { toast } from "sonner";
 import { invoiceStateAtom } from "@/Atoms/atoms";
+import { Button } from "@/Components/ui/button";
 
 export type Payment = {
   method: string;
@@ -53,7 +54,7 @@ export default function Invoicing() {
   });
   const [products, setProducts] = useState<ProductEntry[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
-  const [invoiceId, setInVoiceID] = useState(1);
+  const [invoiceId, setInVoiceID] = useState(0);
 
   const [invoiceState, setInvoiceState] = useAtom(invoiceStateAtom);
   const invoiceStateMap = {
@@ -127,8 +128,9 @@ export default function Invoicing() {
       toast.error("Factura anulada");
       return;
     }
-    else if (amountLeftRef.current > 0) {
+    else if (amountLeftRef.current > 0.001) {
       toast.error("Falta pagar la factura");
+      console.log(amountLeftRef.current)
       return;
     }
     else if (products.length === 0) {
@@ -164,26 +166,69 @@ export default function Invoicing() {
         result: {
           message: string;
           invoice_id: string;
+          insert: boolean
         }
       }
       const data: Response = await res.json();
+      console.log(data);
+      if (!data.result.insert) {
+        toast.error("Ya la caja cerró")
+        return
+      }
       setInvoiceState("finalized");
       setInVoiceID(parseInt(data.result.invoice_id));
       toast.success("Factura finalizada");
-      window.print();
     } else {
       toast.error("Error al guardar la factura en la base de datos");
     }
   };
 
-  const anularFactura = () => {
-    if (invoiceState === "cancelled") {
-      alert("Factura ya anulada");
+  useEffect(() => {
+    if (invoiceId === 0) {
       return;
     }
-    alert("Factura anulada");
-    setInvoiceState("cancelled");
+    window.print();
+  }, [invoiceId])
+
+  const anularFactura = async () => {
+    if (invoiceState === "cancelled" || invoiceState === "draft") {
+      toast.error("No se puede anular una factura que no esté finalizada")
+      return;
+    }
+    const body = {
+      invoice_id: invoiceId
+    }
+    setAnularFacturaDialogState(false);
+    const res = await fetch("http://127.0.0.1:5000/voidInvoice", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    if (res.ok) {
+      setInvoiceState("cancelled");
+      toast.success("Factura anulada");
+    } else {
+      toast.error("Error al anular la factura en la base de datos");
+    }
   };
+
+  const newInvoice = () => {
+    setClient({
+      name: "",
+      surname: "",
+      pid_prefix: "V",
+      pid: "",
+      dir: "",
+    });
+    setProducts([]);
+    setPayments([]);
+    setInVoiceID(0);
+    setInvoiceState("draft");
+    setActiveTab("productos");
+    toast.info("Campos limpiados");
+  }
 
 
 
@@ -263,9 +308,13 @@ export default function Invoicing() {
                 <p className="text-white font-bold text-xl">
                   Estado de la factura: {invoiceStateMap[invoiceState]}
                 </p>
+                <div className="ml-auto">
+                  <Button onClick={newInvoice}>Nueva factura</Button>
+                </div>
               </div>
             </TabsContent>
           </Tabs>
+
         </div>
       </div>
 
@@ -278,6 +327,7 @@ export default function Invoicing() {
             payments,
           }}
         ></FullInvoice>
+        
       </div>
 
     </>

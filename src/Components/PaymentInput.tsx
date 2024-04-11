@@ -5,6 +5,7 @@ import { useKeyCombination } from "@/hooks";
 import { bsToUsd } from "@/functions";
 import { invoiceStateAtom } from "@/Atoms/atoms";
 import { useAtomValue } from "jotai";
+import { usdToBs } from "@/functions";
 interface PaymentInputProps {
     addPayment: (payment: Payment) => void;
     amountLeft: number;
@@ -190,9 +191,10 @@ export default function PaymentInput({ addPayment, amountLeft }: PaymentInputPro
                             {/* button that puts payment.amount == amount left */}
                             <button className="bg-green-500 text-white rounded-md h-8 px-2"
                                 onClick={() => {
+                                    const whatsLeft = currency.name === "BS" ? usdToBs(amountLeftRef.current) : amountLeftRef.current;
                                     setPayment({
                                         ...payment,
-                                        amount: amountLeftRef.current,
+                                        amount: parseFloat(whatsLeft.toFixed(2)),
                                     });
                                 }}
                             >
