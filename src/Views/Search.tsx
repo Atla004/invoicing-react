@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Navbar from "../Components/Navbar";
-import DataTableDemo from "../Components/InvoiceTable";
-import InvoiceInput from "../Components/InvoiceInput";
+import SearchInvoiceTable from "../Components/InvoiceTable";
 
 export type Invoices = {
     clientName: string;
@@ -18,7 +17,7 @@ export default function Search() {
             <div className="p-2 w-full rounded-lg">
                 <div className="w-[920px] mx-auto mt-3">
                    
-                    <DataTableDemo />
+                    <SearchInvoiceTable />
                 </div>
             </div>
         </div>

@@ -9,7 +9,6 @@ import {
 } from "material-react-table";
 import ProductTable from "../Components/SearchProductTable";
 import PaymentTable from "../Components/SearchPaymentTable";
-import { Payment } from 'src/Views/Invoicing.tsx';
 
 // Estilos para los elementos
 const Container = styled.div`

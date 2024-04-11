@@ -16,7 +16,7 @@ export default function Sidebar() {
     }, [sidebarOpen])
 
     return (
-        <aside id="sidebar" className="flex gap-0 flex-row transition-all overflow-hidden absolute -translate-x-56 z-20 bottom-0">
+        <aside id="sidebar" className="flex gap-0 flex-row transition-all overflow-hidden absolute -translate-x-56  z-20 bottom-0">
 
             <div id="side-content" className="p-5 w-56 h-dvh bg-slate-50 transition-all overflow-hidden flex flex-col">
                 <div className="logo flex items-center justify-center">

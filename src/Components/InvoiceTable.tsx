@@ -1,359 +1,254 @@
-"use client"
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { CiRead } from "react-icons/ci";
+import { CiSearch } from "react-icons/ci";
 
-import * as React from "react"
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
-import { ArrowUpDown } from "lucide-react"
-import { Button } from "@/Components/ui/button"
-import { Input } from "@/Components/ui/input"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/Components/ui/table"
+import { Button } from "@/Components/ui/button";
+import { Input } from "@/Components/ui/input";
+import { DatePicker } from "./ui/date-picker";
+import { toast } from "sonner";
 
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/Components/ui/dropdown-menu"
+  MaterialReactTable,
+  useMaterialReactTable,
+  type MRT_ColumnDef,
+} from "material-react-table";
 
-import SearchModalFactura from "../Components/SearchModalFactura"
-
-const data: Payment[] = [
-  {
-    id: "2",
-    monto: 12.1,
-    estado: "Vigente",
-    nombre: "Juan",
-    apellido: "Pérez",
-    cedula: 19576321,
-    prefijo: "V-",
-    fecha: "2024-04-10",
-  },
-  {
-    id: "3",
-    monto: 77,
-    estado: "Vigente",
-    nombre: "Miguel",
-    apellido: "García",
-    cedula: 10876349,
-    prefijo: "V-",
-    fecha: "2024-04-11",
-  },
-  {
-    id: "4",
-    monto: 92.4,
-    estado: "Anulada",
-    nombre: "Sabrina",
-    apellido: "Bracho",
-    cedula: 11579035,
-    prefijo: "V-",
-    fecha: "2024-04-10",
-  },
-  {
-    id: "5",
-    monto: 38.5,
-    estado: "Vigente",
-    nombre: "Andrea",
-    apellido: "Colmenares",
-    cedula: 31578239,
-    prefijo: "V-",
-    fecha: "2024-04-11",
-  },
-  {
-    id: "6",
-    monto: 22,
-    estado: "Anulada",
-    nombre: "Esteban",
-    apellido: "Villalobos",
-    cedula: 18463586,
-    prefijo: "E-",
-    fecha: "2024-04-09",
-  },
-  {
-  id: "7",
-  monto: 48.4,
-  estado: "Anulada",
-  nombre: "Victor",
-  apellido: "González",
-  cedula: 12861354,
-  prefijo: "J-",
-  fecha: "2024-04-11",
-},
-].map(item => ({
-  ...item,
-  prefijocedula: `${item.prefijo}${item.cedula}`,
-})) as Payment[];
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/Components/ui/select";
 
 export type Payment = {
-  id: string
-  monto: number
-  estado: "Anulada" | "Vigente"
-  nombre: string
-  apellido: string
-  cedula: number
-  fecha: string
-  prefijo: string
-}
+  id: string;
+  monto: number;
+  estado: "Anulada" | "Vigente";
+  nombre: string;
+  apellido: string;
+  cedula: number;
+  fecha: string;
+  prefijo: string;
+};
 
-export const columns: ColumnDef<Payment>[] = [
+type InvoiceEntry = {
+  date: string;
+  invoice_id: number;
+  name: string;
+  pid: string;
+  pid_prefix: string;
+  surname: string;
+  total: number;
+  void: boolean;
+};
+
+type FilterField = "name" | "invoice_id" | "date" | "pid" | "";
+
+type FilterValue = string | number | Date;
+
+const columns: MRT_ColumnDef<InvoiceEntry>[] = [
   {
-    accessorKey: "id",
-    header: () => <div className="text-center">ID</div>,
-    cell: ({ row }) => (
-      <div className="capitalize text-center">{row.getValue("id")}</div>
-    ),
+    accessorKey: "invoice_id",
+    header: "ID",
+    size: 50,
   },
   {
-    accessorKey: "estado",
+    accessorFn(originalRow) {
+      return `${originalRow.pid_prefix}-${originalRow.pid}`;
+    },
+    header: "ID Cliente",
+    size: 100,
+  },
+  {
+    accessorKey: "name",
+    header: "Nombre",
+    size: 100,
+  },
+  {
+    accessorKey: "surname",
+    header: "Apellido",
+    size: 100,
+  },
+  {
+    accessorKey: "date",
+    header: "Fecha",
+    size: 50,
+  },
+  {
+    accessorFn(originalRow) {
+      return `USD ${originalRow.total}`;
+    },
+    header: "Total",
+    size: 50,
+  },
+  {
+    accessorFn(originalRow) {
+      return originalRow.void ? "Anulada" : "Vigente";
+    },
     header: "Estado",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("estado")}</div>
-    ),
+    size: 50,
   },
-    {
-    accessorKey: "fecha",
-    header: ({ column }) => {
+  {
+    accessorFn(originalRow) {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Fecha
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
+        <Link to={`/invoice/${originalRow.invoice_id}`}>
+          <CiRead />
+        </Link>
+      );
     },
-    cell: ({ row }) => <div className="text-center">{row.getValue("fecha")}</div>,
+    header: "Ver",
+    size: 20,
   },
-  {
-    accessorKey: "prefijocedula",
-    header: () => <div className="text-center">Cédula</div>,
-    cell: ({ row }) => <div className="text-center">{row.getValue("prefijocedula")}</div>,
-  },
-  {
-    accessorKey: "nombre",
-    header: () => <div className="text-center">Nombre</div>,
-    cell: ({ row }) => <div className="text-center">{row.getValue("nombre")}</div>,
-  },
-  {
-    accessorKey: "apellido",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Apellido
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
-    cell: ({ row }) => <div className="text-center">{row.getValue("apellido")}</div>,
-  },
-  {
-    accessorKey: "monto",
-    header: () => <div className="text-center">Monto</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("monto"))
+];
 
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount)
+export default function SearchInvoiceTable() {
+  const [field, setField] = useState<FilterField>("");
+  const [invoices, setInvoices] = useState<InvoiceEntry[]>([]);
+  const [filterValue, setFilterValue] = useState<FilterValue>("");
 
-      return <div className="text-center font-medium">{formatted}</div>
-    },
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    header: () => <div className="text-right">Detalles</div>,
-    cell: ({ row }) => {
-      const idNum = parseInt(row.getValue("id"))
+  useEffect(() => {
+    if (field === "name") {
+      setFilterValue("");
+    }
+    else if (field === "pid" || field === "invoice_id") {
+      setFilterValue("");
+    }
+    else if (field === "date") {
+      setFilterValue(new Date());
+    }
+  }, [field]);
 
-      return (
-        <div className = "text-right">
-        <SearchModalFactura
-        id={idNum}
-    ></SearchModalFactura>
-    </div>
-      )
-    },
-  },
-]
-
-
-export default function DataTableDemo() {
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [position, setPosition] = React.useState("nada")
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
-
-  const table = useReactTable({
-    data,
+  const table = useMaterialReactTable({
     columns,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
+    data: invoices,
+    enablePagination: false,
+    enableSorting: false,
+    enableColumnActions: false,
+    enableColumnFilters: false,
+    enableGrouping: false,
+    enableRowActions: false,
+    enableDensityToggle: false,
+    enableFullScreenToggle: false,
+    enableHiding: false,
+    initialState: {
+      density: "compact",
     },
-  })
+    muiTableContainerProps: {
+      sx: {
+        height: "280px",
+        maxHeight: "280px"
+      }
+    }
+  });
 
+  const handleSearch = async () => {
+    console.log('searching')
+    
+    if (!filterValue || !field) {
+      toast.error("Por favor selecciona un campo e introduce un valor")
+      return
+    }
+    const body = {
+      field: field,
+      value: ""
+    }
+    if (filterValue instanceof Date) {
+      body.value = filterValue.toISOString().split('T')[0]
+    }
+    else {
+      body.value = filterValue.toString()
+    }
+    const response = await fetch('http://127.0.0.1:5000/searchInvoice', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    })
+    if (response.ok) {
+      type SearchResponse = {
+        result: InvoiceEntry[]
+      }
+      const data:SearchResponse = await response.json()
+      console.log(data)
+      setInvoices(data.result)
+    }
+    
+  } 
   return (
-    <div className="shadow-xl p-4 rounded-xl bg-white">
-    <div className="w-full">
-    <div className="flex items-center justify-center mb-6">
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-      <Button className={`text-xl px-6 py-2 rounded-full bg-gray-600 text-white hover:bg-black ${position === 'nada' ? 'mt-2' : ''}`}>
-  Filtrar Búsqueda
-</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>Tipo de Filtro:</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
-        <DropdownMenuRadioItem value="nada">Ninguno</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="facturaid">ID de Factura</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="facturaest">Estado de Factura</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="fecha">Fecha de Factura</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="clienteced">Cédula de Cliente</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="clientenom">Nombre de Cliente</DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-    <div className="flex items-center py-4">
-  <Input
-    placeholder="Filtrar por ID de Factura..."
-    value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
-    onChange={(event) =>
-      table.getColumn("id")?.setFilterValue(event.target.value)
-    }
-    className={`ml-10 ${position === 'facturaid' ? '' : 'hidden'}`}
-    style={{ width: '250px' }}
-  />
-  <Input
-    placeholder="Filtrar por Estado de Factura..."
-    value={(table.getColumn("estado")?.getFilterValue() as string) ?? ""}
-    onChange={(event) =>
-      table.getColumn("estado")?.setFilterValue(event.target.value)
-    }
-    className={` ml-10 ${position === 'facturaest' ? '' : 'hidden'}`}
-    style={{ width: '250px' }}
-  />
-  <Input
-    placeholder="Filtrar por Fecha (YYYY-MM-DD)..."
-    value={(table.getColumn("fecha")?.getFilterValue() as string) ?? ""}
-    onChange={(event) =>
-      table.getColumn("fecha")?.setFilterValue(event.target.value)
-    }
-    className={` ml-10 ${position === 'fecha' ? '' : 'hidden'}`}
-    style={{ width: '250px' }}
-  />
-  <Input
-    placeholder="Filtrar por Cédula de Cliente..."
-    value={(table.getColumn("prefijocedula")?.getFilterValue() as string) ?? ""}
-    onChange={(event) =>
-      table.getColumn("prefijocedula")?.setFilterValue(event.target.value)
-    }
-    className={`ml-10 ${position === 'clienteced' ? '' : 'hidden'}`}
-    style={{ width: '250px' }}
-  />
-  <Input
-    placeholder="Filtrar por Nombre de Cliente..."
-    value={(table.getColumn("nombre")?.getFilterValue() as string) ?? ""}
-    onChange={(event) =>
-      table.getColumn("nombre")?.setFilterValue(event.target.value)
-    }
-    className={`ml-10 ${position === 'clientenom' ? '' : 'hidden'}`}
-    style={{ width: '250px' }}
-  />
-</div>
-      </div>
-      <div className="rounded-md border">
-      <div style={{ maxHeight: '450px', overflowY: 'auto' }}>
-  <Table>
-    <TableHeader>
-      {table.getHeaderGroups().map((headerGroup) => (
-        <TableRow key={headerGroup.id}>
-          {headerGroup.headers.map((header) => {
-            return (
-              <TableHead key={header.id}>
-                {header.isPlaceholder
-                  ? null
-                  : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-              </TableHead>
-            )
-          })}
-        </TableRow>
-      ))}
-    </TableHeader>
-    <TableBody>
-      {table.getRowModel().rows?.length ? (
-        table.getRowModel().rows.map((row) => (
-          <TableRow
-            key={row.id}
-            data-state={row.getIsSelected() && "selected"}
-          >
-            {row.getVisibleCells().map((cell) => (
-              <TableCell key={cell.id}>
-                {flexRender(
-                  cell.column.columnDef.cell,
-                  cell.getContext()
-                )}
-              </TableCell>
-            ))}
-          </TableRow>
-        ))
-      ) : (
-        <TableRow>
-          <TableCell
-            colSpan={columns.length}
-            className="h-24 text-center font-bold"
-          >
-            Sin resultados.
-          </TableCell>
-        </TableRow>
-      )}
-    </TableBody>
-  </Table>
-</div>
+    <div className="grid">
+      <div className="shadow-xl p-4 rounded-xl bg-white max-w-4xl">
+        <div className="w-full">
+          <div className="flex items-center justify-center mb-6 gap-2">
+            <Select
+              value={field}
+              onValueChange={(value: FilterField) => setField(value)}
+            >
+              <SelectTrigger className="w-44">
+                <SelectValue placeholder="Selecciona un filtro" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="name">Nombre del cliente</SelectItem>
+                  <SelectItem value="pid">ID del cliente</SelectItem>
+                  <SelectItem value="invoice_id">ID de la factura</SelectItem>
+                  <SelectItem value="date">Fecha</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
+            <div className="w-[280px]">
+              {
+                field === "" && (
+                  <Input
+                    placeholder="Valor del filtro"
+                    type={"text"}
+                    disabled
+                  />
+                )
+              }
+              {field === "name" && (
+                <Input
+                  placeholder="Nombre del cliente"
+                  type={"text"}
+                  value={filterValue as string}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => setFilterValue(event.target.value)}
+                />
+              )}
+              {field === "pid" && (
+                <Input
+                  placeholder="ID del cliente"
+                  type={"number"}
+                  value={filterValue as number}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => setFilterValue(parseInt(event.target.value))}
+                />
+              )}
+              {field === "invoice_id" && (
+                <Input
+                  placeholder="ID de la factura"
+                  type={"number"}
+                  value={filterValue as number}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => setFilterValue(parseInt(event.target.value))}
+                />
+              )}
+              {field === "date" && (
+                <DatePicker
+                  date={filterValue as Date}
+                  setDate={(value) => setFilterValue(value)}
+                />
+              )}
+            </div>
+            <Button variant={"outline"} onClick={handleSearch}>
+              <CiSearch className="w-5 h-5" />
+            </Button>
+          </div>
+            <MaterialReactTable table={table} />
+        </div>
       </div>
     </div>
-  </div>
-  )
+  );
 }
