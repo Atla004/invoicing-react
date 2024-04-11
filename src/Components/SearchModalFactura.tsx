@@ -9,9 +9,7 @@ import {
 } from "material-react-table";
 import ProductTable from "../Components/SearchProductTable";
 import PaymentTable from "../Components/SearchPaymentTable";
-import { ProductEntry } from 'src/Views/Invoicing.tsx';
 import { Payment } from 'src/Views/Invoicing.tsx';
-import { set } from 'date-fns';
 
 // Estilos para los elementos
 const Container = styled.div`
@@ -114,8 +112,7 @@ const totals = {
       <Button onClick={openModal}>Ver</Button>
       <Modal isOpen={isOpen} onRequestClose={closeModal}>
         <Container>
-          <h2>Factura {id}</h2>
-          <p>Nombre: {factura.result.client.name}</p>
+          <h2>Factura #{id}</h2>
           <p>pid: {factura.result.client.pid}</p>
           <div>
             <PaymentTable 

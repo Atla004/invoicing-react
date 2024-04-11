@@ -24,7 +24,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/Components/ui/table"
-import { Check, ChevronsUpDown } from "lucide-react"
 
 import {
   DropdownMenu,
@@ -40,77 +39,141 @@ import SearchModalFactura from "../Components/SearchModalFactura"
 
 const data: Payment[] = [
   {
-    id: "m5gr84i9",
-    amount: 316,
-    status: "success",
-    email: "ken99@yahoo.com",
+    id: "2",
+    monto: 12.1,
+    estado: "Vigente",
+    nombre: "Juan",
+    apellido: "Pérez",
+    cedula: 19576321,
+    prefijo: "V-",
+    fecha: "2021-09-01",
   },
   {
-    id: "3u1reuv4",
-    amount: 242,
-    status: "success",
-    email: "Abe45@gmail.com",
+    id: "3",
+    monto: 77,
+    estado: "Vigente",
+    nombre: "Miguel",
+    apellido: "García",
+    cedula: 10876349,
+    prefijo: "V-",
+    fecha: "2021-09-01",
   },
   {
-    id: "derv1ws0",
-    amount: 837,
-    status: "processing",
-    email: "Monserrat44@gmail.com",
+    id: "4",
+    monto: 92.4,
+    estado: "Anulada",
+    nombre: "Sabrina",
+    apellido: "Bracho",
+    cedula: 11579035,
+    prefijo: "V-",
+    fecha: "2021-09-01",
   },
   {
-    id: "5kma53ae",
-    amount: 874,
-    status: "success",
-    email: "Silas22@gmail.com",
+    id: "5",
+    monto: 38.5,
+    estado: "Vigente",
+    nombre: "Andrea",
+    apellido: "Colmenares",
+    cedula: 31578239,
+    prefijo: "V-",
+    fecha: "2021-09-01",
   },
   {
-    id: "bhqecj4p",
-    amount: 721,
-    status: "failed",
-    email: "carmella@hotmail.com",
+    id: "6",
+    monto: 22,
+    estado: "Anulada",
+    nombre: "Esteban",
+    apellido: "Villalobos",
+    cedula: 18463586,
+    prefijo: "E-",
+    fecha: "2020-09-01",
   },
-]
+  {
+  id: "7",
+  monto: 48.4,
+  estado: "Anulada",
+  nombre: "Victor",
+  apellido: "González",
+  cedula: 12861354,
+  prefijo: "J-",
+  fecha: "2021-09-01",
+},
+].map(item => ({
+  ...item,
+  prefijocedula: `${item.prefijo}${item.cedula}`,
+})) as Payment[];
 
 export type Payment = {
   id: string
-  amount: number
-  status: "pending" | "processing" | "success" | "failed"
-  email: string
+  monto: number
+  estado: "Anulada" | "Vigente"
+  nombre: string
+  apellido: string
+  cedula: number
+  fecha: string
+  prefijo: string
 }
 
 export const columns: ColumnDef<Payment>[] = [
   {
-    id: "select",
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "id",
+    header: () => <div className="text-center">ID</div>,
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
+      <div className="capitalize text-center">{row.getValue("id")}</div>
     ),
   },
   {
-    accessorKey: "email",
+    accessorKey: "estado",
+    header: "Estado",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("estado")}</div>
+    ),
+  },
+    {
+    accessorKey: "fecha",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email
+          Fecha
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    cell: ({ row }) => <div className="text-center">{row.getValue("fecha")}</div>,
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+    accessorKey: "prefijocedula",
+    header: () => <div className="text-center">Cédula</div>,
+    cell: ({ row }) => <div className="text-center">{row.getValue("prefijocedula")}</div>,
+  },
+  {
+    accessorKey: "nombre",
+    header: () => <div className="text-center">Nombre</div>,
+    cell: ({ row }) => <div className="text-center">{row.getValue("nombre")}</div>,
+  },
+  {
+    accessorKey: "apellido",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Apellido
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => <div className="text-center">{row.getValue("apellido")}</div>,
+  },
+  {
+    accessorKey: "monto",
+    header: () => <div className="text-center">Monto</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
+      const amount = parseFloat(row.getValue("monto"))
 
       // Format the amount as a dollar amount
       const formatted = new Intl.NumberFormat("en-US", {
@@ -118,19 +181,22 @@ export const columns: ColumnDef<Payment>[] = [
         currency: "USD",
       }).format(amount)
 
-      return <div className="text-right font-medium">{formatted}</div>
+      return <div className="text-center font-medium">{formatted}</div>
     },
   },
   {
     id: "actions",
     enableHiding: false,
+    header: () => <div className="text-right">Detalles</div>,
     cell: ({ row }) => {
-      const buttonAction = row.original;
+      const idNum = parseInt(row.getValue("id"))
 
       return (
+        <div className = "text-right">
         <SearchModalFactura
-        id={100}
+        id={idNum}
     ></SearchModalFactura>
+    </div>
       )
     },
   },
@@ -140,7 +206,7 @@ export const columns: ColumnDef<Payment>[] = [
 export default function DataTableDemo() {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [position, setPosition] = React.useState("fecha")
+  const [position, setPosition] = React.useState("nada")
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
@@ -165,104 +231,127 @@ export default function DataTableDemo() {
   })
 
   return (
-    <div className="shadow-xl p-4 rounded-md bg-white">
+    <div className="shadow-xl p-4 rounded-xl bg-white">
     <div className="w-full">
-    <h1 className="text-lg font-bold">Búsqueda de Facturas</h1>
+    <div className="flex items-center justify-center mb-6">
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">Filtrar Búsqueda</Button>
+      <Button className={`text-xl px-6 py-2 rounded-full bg-gray-600 text-white hover:bg-black ${position === 'nada' ? 'mt-2' : ''}`}>
+  Filtrar Búsqueda
+</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>Tipo de Filtrado</DropdownMenuLabel>
+        <DropdownMenuLabel>Tipo de Filtro:</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
-          <DropdownMenuRadioItem value="fecha">Fecha de Factura</DropdownMenuRadioItem>
+        <DropdownMenuRadioItem value="nada">Ninguno</DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="facturaid">ID de Factura</DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="facturaest">Estado de Factura</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="fecha">Fecha de Factura</DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="clienteced">Cédula de Cliente</DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="clientenom">Nombre de Cliente</DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filtrar por..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+    <div className="flex items-center py-4">
+  <Input
+    placeholder="Filtrar por ID de Factura..."
+    value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
+    onChange={(event) =>
+      table.getColumn("id")?.setFilterValue(event.target.value)
+    }
+    className={`ml-10 ${position === 'facturaid' ? '' : 'hidden'}`}
+    style={{ width: '250px' }}
+  />
+  <Input
+    placeholder="Filtrar por Estado de Factura..."
+    value={(table.getColumn("estado")?.getFilterValue() as string) ?? ""}
+    onChange={(event) =>
+      table.getColumn("estado")?.setFilterValue(event.target.value)
+    }
+    className={` ml-10 ${position === 'facturaest' ? '' : 'hidden'}`}
+    style={{ width: '250px' }}
+  />
+  <Input
+    placeholder="Filtrar por Fecha (YYYY-MM-DD)..."
+    value={(table.getColumn("fecha")?.getFilterValue() as string) ?? ""}
+    onChange={(event) =>
+      table.getColumn("fecha")?.setFilterValue(event.target.value)
+    }
+    className={` ml-10 ${position === 'fecha' ? '' : 'hidden'}`}
+    style={{ width: '250px' }}
+  />
+  <Input
+    placeholder="Filtrar por Cédula de Cliente..."
+    value={(table.getColumn("prefijocedula")?.getFilterValue() as string) ?? ""}
+    onChange={(event) =>
+      table.getColumn("prefijocedula")?.setFilterValue(event.target.value)
+    }
+    className={`ml-10 ${position === 'clienteced' ? '' : 'hidden'}`}
+    style={{ width: '250px' }}
+  />
+  <Input
+    placeholder="Filtrar por Nombre de Cliente..."
+    value={(table.getColumn("nombre")?.getFilterValue() as string) ?? ""}
+    onChange={(event) =>
+      table.getColumn("nombre")?.setFilterValue(event.target.value)
+    }
+    className={`ml-10 ${position === 'clientenom' ? '' : 'hidden'}`}
+    style={{ width: '250px' }}
+  />
+</div>
       </div>
       <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
+      <div style={{ maxHeight: '450px', overflowY: 'auto' }}>
+  <Table>
+    <TableHeader>
+      {table.getHeaderGroups().map((headerGroup) => (
+        <TableRow key={headerGroup.id}>
+          {headerGroup.headers.map((header) => {
+            return (
+              <TableHead key={header.id}>
+                {header.isPlaceholder
+                  ? null
+                  : flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+              </TableHead>
+            )
+          })}
+        </TableRow>
+      ))}
+    </TableHeader>
+    <TableBody>
+      {table.getRowModel().rows?.length ? (
+        table.getRowModel().rows.map((row) => (
+          <TableRow
+            key={row.id}
+            data-state={row.getIsSelected() && "selected"}
+          >
+            {row.getVisibleCells().map((cell) => (
+              <TableCell key={cell.id}>
+                {flexRender(
+                  cell.column.columnDef.cell,
+                  cell.getContext()
+                )}
+              </TableCell>
             ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+          </TableRow>
+        ))
+      ) : (
+        <TableRow>
+          <TableCell
+            colSpan={columns.length}
+            className="h-24 text-center font-bold"
           >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
+            Sin resultados.
+          </TableCell>
+        </TableRow>
+      )}
+    </TableBody>
+  </Table>
+</div>
       </div>
     </div>
   </div>
