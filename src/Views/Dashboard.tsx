@@ -76,8 +76,12 @@ export default function Dashboard() {
         }
       );
       const data = await response.json();
+      if (data.result.average_invoice === "") {
+        data.result.average_invoice === 0
+      }
       setClosingStatement(data.result);
       setIsLoading(false);
+      
       if (data.result.closing_time === "" && maxDate === filterDate) {
         console.log("Caja Abierta");
         setClosemessage("Cerrar Caja");
@@ -139,6 +143,9 @@ export default function Dashboard() {
           buttonColor={closemessage === "Caja Cerrada" ? "red" : "green"}
           open={openCerrarCaja}
           setOpen={setCerrarCaja}
+          disabled={
+            closingStatement.date !== moment().format("YYYY-MM-DD")
+          }
         />
       </div>
       <div className="flex flex-col items-center min-h-screen bg-gradient-to-tr from-sky-400 via-indigo-600 to-blue-700">
@@ -161,7 +168,7 @@ export default function Dashboard() {
           <div className="col-span-2 bg-white p-4 rounded-lg shadow-md m-2">
             <BillTableCard invoices={closingStatement} />
           </div>
-          <div className="col-span-3 grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="col-span-1 bg-white p-4 rounded-lg shadow-md m-2">
               <h2 className="text-xl text-center font-bold mb-4">
                 Totales por Banco
