@@ -66,24 +66,24 @@ export default function BillCard({ type, result }: BillCardProps) {
 
   switch(type) {
     case "total":
-      cardContent = "Total";
+      cardContent = "Ganancia Total Diaria";
       cardTitle = ` $${totalSum.toFixed(2)}`;
-      cardDescription = "suma de todas las facturas ";
+      cardDescription = "Sumatoria de todas las facturas del día.";
       break;
     case "average":
-      cardContent = "average_invoice";
+      cardContent = "Promedio Individual";
       cardTitle = ` $${averageInvoice.toFixed(2)}`;
-      cardDescription = "promedio de monto por factura";
+      cardDescription = "Montos totales por factura del día promediados.";
       break;
   }
 
   return (
-    <Card className="w-[350px]">
-      <CardHeader>
-        <CardContent>{cardContent}</CardContent>
-        <CardTitle>{cardTitle}</CardTitle>
-        <CardDescription>{cardDescription}</CardDescription>
+    <Card className="flex flex-col items-center p-4 m-2">
+      <CardHeader className="text-center items-center -mt-2">  {/* Add negative top margin here */}
+        <CardContent className="font-bold font text-2xl -mt-3 mb-3">{cardContent}</CardContent>
       </CardHeader>
+      <CardTitle className="font-bold text-6xl -mt-8 mb-7">{cardTitle}</CardTitle>  {/* Increase negative top margin here */}
+      <CardDescription className="mt-4 font-semibold text-center">{cardDescription}</CardDescription>
     </Card>
   )
 }

@@ -70,41 +70,43 @@ import {
     "total": 4.4,
     "void": false
     */
+
+
     return(
-      <Table>
-      <TableCaption>A list of the last 5 invoices.</TableCaption>
-      <TableHeader>
+      <Table className="shadow-lg bg-white">
+      <TableCaption className="text-3xl font-bold mt-9 mb-2">Últimas facturas del día</TableCaption>
+      <TableHeader className="bg-gray-200 text-black">
         <TableRow>
-          <TableHead className="w-[100px]"> invoice_id</TableHead>
-          <TableHead>pid_prefix</TableHead>
-          <TableHead>pid</TableHead>
-          <TableHead>name</TableHead>
-          <TableHead>surname</TableHead>
-          <TableHead className="text-right">Total</TableHead>
+          <TableHead className="w-[100px] py-4 px-2 text-center"> ID de Factura</TableHead> {/* Align text to the right */}
+          <TableHead className="py-4 px-2 text-center">Prefijo de Cédula</TableHead> {/* Align text to the right */}
+          <TableHead className="py-4 px-2">Cédula</TableHead>
+          <TableHead className="py-4 px-2">Nombre</TableHead>
+          <TableHead className="py-4 px-2">Apellido</TableHead>
+          <TableHead className="text-center py-4 px-2">Monto Total</TableHead>
         </TableRow>
       </TableHeader>
       
       <TableBody className="max-h-[200px] overflow-y-auto">
         {invoices.slice(-5).reverse().map((invoice) => (
           <TableRow key={invoice.name}>
-            <TableCell className="font-medium">{invoice.invoice_id}</TableCell>
-            <TableCell>{invoice.pid_prefix}</TableCell>
-            <TableCell>{invoice.pid}</TableCell>
-            <TableCell>{invoice.name}</TableCell>
-            <TableCell>{invoice.surname}</TableCell>
-
-            <TableCell className="text-right">{invoice.total}</TableCell>
+            <TableCell className="font-medium py-4 px-2 text-center">{invoice.invoice_id}</TableCell> {/* Align text to the right */}
+            <TableCell className="py-4 px-2 text-center">{invoice.pid_prefix}</TableCell> {/* Align text to the right */}
+            <TableCell className="py-4 px-2">{invoice.pid}</TableCell>
+            <TableCell className="py-4 px-2">{invoice.name}</TableCell>
+            <TableCell className="py-4 px-2">{invoice.surname}</TableCell>
+    
+            <TableCell className="text-center py-4 px-2">${invoice.total.toFixed(2)}</TableCell>
           </TableRow>
         ))}
       </TableBody>
- 
-      <TableFooter>
+    
+      <TableFooter className="bg-blue-500 text-white">
         <TableRow>
-          <TableCell colSpan={5}>Total</TableCell>
-          <TableCell className="text-right">{result.day_total}</TableCell>
+          <TableCell colSpan={5} className="py-4 px-2">Total Final Diario</TableCell>
+          <TableCell className="text-center py-4 px-2">${result.day_total.toFixed(2)}</TableCell>
         </TableRow>
       </TableFooter>
-
+    
     </Table>
     ) 
 

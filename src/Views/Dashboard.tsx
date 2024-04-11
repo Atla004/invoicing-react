@@ -8,7 +8,6 @@ import { useKeyCombination } from "@/hooks";
 import BillTableCard from "@/Components/BillTableCard";
 import { toast } from "sonner";
 import moment from 'moment';
-import { set } from "date-fns";
 
 type HelloResponse = {
     message: string;
@@ -130,49 +129,52 @@ export default function Dashboard() {
 
     return (
         <>
-        
             <Navbar></Navbar> 
-                    <div className="fixed top-10 right-10 m-4">
-                        <ActionAlertProg
-                            title="¿Estás seguro?"
-                            action={cerrarCaja}
-                            description="Estas seguro que quieres cerar caja el dia de hoy"
-                            button={closemessage}
-                            buttonColor={closemessage === "Caja Cerrada" ? "red" : "green"}
-                            open={openCerrarCaja}
-                            setOpen={setCerrarCaja}
-                        />
-                    </div>
-            <div>
-
+            <div className="fixed top-10 right-10 m-4">
+                <ActionAlertProg
+                    title="¿Estás seguro?"
+                    action={cerrarCaja}
+                    description="¿Quieres cerrar la caja del día de hoy? Esta acción no se puede deshacer."
+                    button={closemessage}
+                    buttonColor={closemessage === "Caja Cerrada" ? "red" : "green"}
+                    open={openCerrarCaja}
+                    setOpen={setCerrarCaja}
+                />
             </div>
-            <div className="p-8 w-full bg-gradient-to-tr from-sky-400 via-indigo-600 to-blue-700">
+            <div className="flex flex-col items-center min-h-screen bg-gradient-to-tr from-sky-400 via-indigo-600 to-blue-700">
+            <h1 className="text-4xl font-bold text-center text-white mt-6">Dashboard</h1>
             <BillDate setFilterDate={setFilterDate} filterDate={filterDate} maxDate = {maxDate}></BillDate>
-                <h1 className="text-3xl">Dashboard</h1>
-                {message.message && <p>{message.message}</p>}
-
-                <div className="content p-2 grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-4">
-
-                    <div className="col-span-1 md:row-span-1">
-                        <BillCard type="total" result={closingStatement}  />
-                        <BillCard type="average" result={closingStatement}  />
-                    </div>
-                    <div className="col-span-2 md:col-span-2 md:row-span-2 flex items-center justify-center">
-                        <BarChartA type="total" invoices={closingStatement.banks} />
-                        <BarChartA type="total" invoices={closingStatement.methods} />
-                        <BarChartA type="total" invoices={closingStatement.products} />
-                        <BarChartA type="sold" invoices={closingStatement.products} />
-
-                    </div>
-                    <div className="col-span-2 md:row-span-2">
-                        <BillTableCard invoices={closingStatement} />
-             
-                    </div>
+            {message.message && <p className="text-lg font-bold text-blue-500">{message.message}</p>}
+            <div className="content p-4 grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-100 rounded-lg shadow-lg">
+            <div className="flex flex-col justify-between h-full">
+  <BillCard type="total" result={closingStatement} />
+  <BillCard type="average" result={closingStatement} />
+</div>
+                <div className="col-span-2 bg-white p-4 rounded-lg shadow-md m-2">
+                    <BillTableCard invoices={closingStatement} />
+                </div>
+                <div className="col-span-3 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="col-span-1 bg-white p-4 rounded-lg shadow-md m-2">
+  <h2 className="text-xl text-center font-bold mb-4">Totales por Banco</h2>
+  <BarChartA type="total" invoices={closingStatement.banks} />
+</div>
+<div className="col-span-1 bg-white p-4 rounded-lg shadow-md m-2">
+  <h2 className="text-xl text-center font-bold mb-4">Totales por Método de Pago</h2>
+  <BarChartA type="total" invoices={closingStatement.methods} />
+</div>
+<div className="col-span-1 bg-white p-4 rounded-lg shadow-md m-2">
+  <h2 className="text-xl text-center font-bold mb-4">Total de Ganancia por Producto</h2>
+  <BarChartA type="total" invoices={closingStatement.products} />
+</div>
+<div className="col-span-1 bg-white p-4 rounded-lg shadow-md m-2">
+  <h2 className="text-xl text-center font-bold mb-4">Total de Productos Vendidos</h2>
+  <BarChartA type="sold" invoices={closingStatement.products} />
+</div>
                 </div>
             </div>
-            <div className="w-56">
-
-            </div>
-        </>
+        </div>
+        <div className="w-56">
+        </div>
+    </>
     )
 }

@@ -46,15 +46,15 @@ const handleNextDay = () => {
     return prevDate;
   });
 };
-  return (
-    <div>
-        <Button variant="outline" size="icon" onClick={handlePreviousDay} className="border-none">
-            <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <span>{filterDate}</span>
-        <Button variant="outline" size="icon" onClick={handleNextDay} className="border-none">
-            <ChevronRight className="h-4 w-4" />
-        </Button>
-    </div>
-  );
+return (
+  <div className="flex items-center justify-center space-x-4 bg-gray-100 p-2 rounded-lg my-8">
+      <Button variant="outline" size="icon" onClick={handlePreviousDay} className="border-none bg-blue-500 text-white rounded-full p-2 hover:bg-blue-700">
+          <ChevronLeft className="h-4 w-4" />
+      </Button>
+      <span className="text-lg font-bold">{filterDate}</span>
+      <Button variant="outline" size="icon" onClick={handleNextDay} className="border-none bg-blue-500 text-white rounded-full p-2 hover:bg-blue-700">
+          <ChevronRight className="h-4 w-4" />
+      </Button>
+  </div>
+);
 }

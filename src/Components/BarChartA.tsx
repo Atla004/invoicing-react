@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Bar, BarChart, ResponsiveContainer,YAxis,XAxis,Tooltip } from "recharts"
 import {Card} from "@/Components/ui/card"
-import { title } from "process";
+import { Label } from 'recharts';
 
 
 
@@ -19,11 +19,10 @@ interface Invoice {
 interface BarChartAProps {
   invoices: Invoice[];
   type?: "sold" | "total" ;
+  title?: string;
 }
 
 export default function BarChartA({invoices, type }: BarChartAProps) {
-  
-
 
 const data = invoices.map(invoice => ({
   X: invoice.bank || invoice.method || invoice.name,
@@ -43,29 +42,36 @@ if (name === 'banks') {
 }
 
 return (
-  <Card>
-    <h2 className="text-xl font-bold mb-4">{title}</h2>
-    <div className="w-full h-100">
-      <ResponsiveContainer width="100%" height="100%" minWidth={300} minHeight={300}>
-        <BarChart data={data}>
-          <YAxis domain={[0, 'auto']} tickFormatter={(tick) => type === 'sold' ? tick : `$${tick}`} />
-          <XAxis dataKey="X" />
-          <Tooltip />
-
-          <Bar
-            dataKey="Y"
-            name="Total Amount"
-            style={
-              {
-                fill: "hsl(var(--foreground))",
-                opacity: 0.9,
-              } as React.CSSProperties
-            }
-            barSize={30}
-          />
-        </BarChart>
+  <Card className="bg-white rounded-lg shadow-md p-4">
+    <h2 className="text-xl font-bold mb-4 text-blue-500">{title}</h2>
+    <div className="w-full h-100 bg-gray-100 p-4 rounded-lg">
+      <ResponsiveContainer width="100%" height="100%" minWidth={250} minHeight={250}>
+      <BarChart data={data} margin={{ left: -19 }}>
+  <Label value={title} offset={0} position="top" style={{fontSize: '24px', fontFamily: 'Segoe UI Black'}} />
+  <YAxis 
+    domain={[0, 'auto']} 
+    tickFormatter={(tick) => type === 'sold' ? tick : `$${tick}`} 
+    tick={{ fontSize: 14, fontFamily: 'Segoe UI Black' }}
+  />
+  <XAxis 
+    dataKey="X" 
+    tick={{ fontSize: 11.5, fontFamily: 'Segoe UI Black' }}
+  />
+  <Tooltip />
+  <Bar
+    dataKey="Y"
+    name="Total Amount"
+    style={
+      {
+        fill: "hsl(var(--foreground))",
+        opacity: 0.9,
+      } as React.CSSProperties
+    }
+    barSize={30}
+  />
+</BarChart>
       </ResponsiveContainer>
     </div>
   </Card>
-)
+);
 }
