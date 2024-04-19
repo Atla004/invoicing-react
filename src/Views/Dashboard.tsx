@@ -61,10 +61,13 @@ export default function Dashboard() {
 
   useEffect(() => {
     setIsLoading(true);
+
     const fetchData = async () => {
       const body = {
         date: filterDate,
       };
+
+      try{
       const response = await fetch(
         "http://127.0.0.1:5000/getClosingStatement",
         {
@@ -75,17 +78,27 @@ export default function Dashboard() {
           body: JSON.stringify(body),
         }
       );
+
+
       const data = await response.json();
+
+      if (data.result.average_invoice === "") {
+        data.result.average_invoice === 0
+      }
       setClosingStatement(data.result);
       setIsLoading(false);
+      
       if (data.result.closing_time === "" && maxDate === filterDate) {
         console.log("Caja Abierta");
         setClosemessage("Cerrar Caja");
       } else {
         setClosemessage("Caja Cerrada");
       }
-      //console.log(closemessage);
-      //console.log(closingStatement.closing_time);
+    } catch (error) {
+        toast.error("Error al cargar los datos del servidor");
+        console.error("Error al cargar los datos del servidor\n","Base de Datos: ", "https://github.com/Tomas-Santana/invoicing-backend");
+    }
+    
     };
     fetchData();
   }, [filterDate]);
@@ -124,9 +137,13 @@ export default function Dashboard() {
 
   //SOLO CARGA CON EL BACKEND ABIERTO
   if (isLoading) {
-    return <p>Cargando...</p>;
-  }
 
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-center text-2xl font-bold">Cargando...</p>
+      </div>
+    );
+  }
   return (
     <>
       <Navbar></Navbar>
@@ -139,10 +156,13 @@ export default function Dashboard() {
           buttonColor={closemessage === "Caja Cerrada" ? "red" : "green"}
           open={openCerrarCaja}
           setOpen={setCerrarCaja}
+          disabled={
+            closingStatement.date !== moment().format("YYYY-MM-DD")
+          }
         />
       </div>
       <div className="flex flex-col items-center min-h-screen bg-gradient-to-tr from-sky-400 via-indigo-600 to-blue-700">
-        <h1 className="text-4xl font-bold text-center text-white mt-6">
+        <h1 className="text-5xl font-bold text-center text-white mt-6">
           Dashboard
         </h1>
         <BillDate
@@ -161,7 +181,7 @@ export default function Dashboard() {
           <div className="col-span-2 bg-white p-4 rounded-lg shadow-md m-2">
             <BillTableCard invoices={closingStatement} />
           </div>
-          <div className="col-span-3 grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="col-span-1 bg-white p-4 rounded-lg shadow-md m-2">
               <h2 className="text-xl text-center font-bold mb-4">
                 Totales por Banco

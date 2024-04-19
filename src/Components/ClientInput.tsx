@@ -100,7 +100,7 @@ export default function ClientInput({
             type="text"
             id="client"
             className="h-8 w-1/2 rounded-md border px-2 inline"
-            placeholder="Name"
+            placeholder="Nombre"
             maxLength={50}
             value={clientInfo.name}
             disabled={isDisabled}
@@ -115,7 +115,7 @@ export default function ClientInput({
             type="text"
             id="client"
             className="h-8 w-1/2 rounded-md border px-2 inline"
-            placeholder="Surname"
+            placeholder="Apellido"
             maxLength={500}
             value={clientInfo.surname}
             disabled={isDisabled}
@@ -173,7 +173,7 @@ export default function ClientInput({
             type="text"
             id="client"
             disabled={isDisabled}
-            placeholder="Direccion"
+            placeholder="Dirección"
             maxLength={100}
             className="h-8 w-full rounded-md border px-2 inline"
             value={clientInfo.dir}

@@ -15,9 +15,6 @@ export default function Layout() {
     useKeyCombination(() => {
         navigate("/search")
     }, ['ctrl','alt', "3"])
-    useKeyCombination(() => {
-        navigate("/statements")
-    }, ['ctrl','alt', "4"])
     return (
         <div className="flex">
             <Sidebar />

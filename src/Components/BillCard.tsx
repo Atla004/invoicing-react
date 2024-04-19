@@ -37,7 +37,7 @@ interface Product {
 }
 
 interface Result {
-  average_invoice: number;
+  average_invoice: number | "";
   banks: Bank[];
   date: string;
   day_total: number;
@@ -55,10 +55,12 @@ interface BillCardProps {
 
 export default function BillCard({ type, result }: BillCardProps) {
 
-
-
   const totalSum = result.day_total;
-  const averageInvoice = result.average_invoice;
+  let averageInvoice = result.average_invoice;
+
+  if (averageInvoice === "") {
+    averageInvoice = 0
+  }
 
 
 
