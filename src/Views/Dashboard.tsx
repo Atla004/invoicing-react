@@ -61,10 +61,13 @@ export default function Dashboard() {
 
   useEffect(() => {
     setIsLoading(true);
+
     const fetchData = async () => {
       const body = {
         date: filterDate,
       };
+
+      try{
       const response = await fetch(
         "http://127.0.0.1:5000/getClosingStatement",
         {
@@ -75,7 +78,10 @@ export default function Dashboard() {
           body: JSON.stringify(body),
         }
       );
+
+
       const data = await response.json();
+
       if (data.result.average_invoice === "") {
         data.result.average_invoice === 0
       }
@@ -88,8 +94,11 @@ export default function Dashboard() {
       } else {
         setClosemessage("Caja Cerrada");
       }
-      //console.log(closemessage);
-      //console.log(closingStatement.closing_time);
+    } catch (error) {
+        toast.error("Error al cargar los datos del servidor");
+        console.error("Error al cargar los datos del servidor");
+    }
+    
     };
     fetchData();
   }, [filterDate]);
@@ -128,9 +137,13 @@ export default function Dashboard() {
 
   //SOLO CARGA CON EL BACKEND ABIERTO
   if (isLoading) {
-    return <p>Cargando...</p>;
-  }
 
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-center text-2xl font-bold">Cargando...</p>
+      </div>
+    );
+  }
   return (
     <>
       <Navbar></Navbar>
