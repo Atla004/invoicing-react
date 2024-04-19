@@ -96,7 +96,7 @@ export default function Dashboard() {
       }
     } catch (error) {
         toast.error("Error al cargar los datos del servidor");
-        console.error("Error al cargar los datos del servidor");
+        console.error("Error al cargar los datos del servidor\n","Base de Datos: ", "https://github.com/Tomas-Santana/invoicing-backend");
     }
     
     };
